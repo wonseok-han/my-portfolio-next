@@ -38,6 +38,7 @@ export default function CareerSection() {
         const data = await response.json();
         setCareerData(data);
         setLoading(false);
+        setActiveTab(data[0].key);
       } catch (error) {
         console.error('Failed to fetch career data:', error);
         setLoading(false);
@@ -121,7 +122,19 @@ export default function CareerSection() {
                           ))}
                         </div>
 
-                        {/* 명확한 intro와 result */}
+                        {/* 팀 구성원 섹션 */}
+                        <div className="text-gray-300 mb-4">
+                          <h5 className="text-lg font-semibold mb-2">Team</h5>
+                          <ul className="list-disc list-inside space-y-1">
+                            {project.man.map((member, index) => (
+                              <li key={index} className="text-sm">
+                                {member}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        {/* intro, result 섹션 */}
                         <div className="text-gray-300 mb-4">
                           <h5 className="text-lg font-semibold mb-2">
                             Description
