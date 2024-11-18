@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Analytics } from '@vercel/analytics/react';
 import localFont from 'next/font/local';
 import './globals.css';
 
@@ -29,6 +30,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
+        <Analytics />
         <header className="sticky top-0 z-10 bg-dark border-b border-mint">
           <nav className="container mx-auto flex justify-between p-4">
             <a href="#about-me" className="hover:text-white font-semibold">
