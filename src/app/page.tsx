@@ -1,5 +1,6 @@
 import CareerSection from '@components/career-section';
 import ProjectsSection from '@components/project-section';
+import SkillsSection from '@components/skill-section';
 
 export default function HomePage() {
   return (
@@ -10,12 +11,7 @@ export default function HomePage() {
       >
         <h1 className="text-4xl">About Me</h1>
       </section>
-      <section
-        id="skills"
-        className="h-screen flex items-center justify-center"
-      >
-        <h1 className="text-4xl">Skills</h1>
-      </section>
+      <SkillsSection />
 
       <CareerSection />
 

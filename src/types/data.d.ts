@@ -8,20 +8,17 @@ interface UserProps {
   company: string;
 }
 
-interface SkillProps {
-  [key: string]: Array<string>;
-  frontend: Array<string>;
-  backend: Array<string>;
-  scm: Array<string>;
-  database: Array<string>;
-}
+type SkillType = {
+  name: string;
+  src: string;
+};
 
-interface SkillNameProps {
-  [key: string]: string;
-  frontend: string;
-  backend: string;
-  scm: string;
-  database: string;
+interface SkillProps {
+  frontend: Array<SkillType>;
+  backend: Array<SkillType>;
+  scm: Array<SkillType>;
+  database: Array<SkillType>;
+  blockchain: Array<SkillType>;
 }
 
 interface CareerProjectProps {
