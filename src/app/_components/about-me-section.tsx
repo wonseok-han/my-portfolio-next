@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import {
   FaBirthdayCake,
   FaBuilding,
@@ -45,9 +45,27 @@ export default function AboutMeSection() {
 
         {/* Introduction */}
         <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-          <p className="text-lg leading-relaxed text-gray-300 whitespace-pre-line">
-            {userData?.intro}
-          </p>
+          {userData?.intro.split('\n').map((line, index) => {
+            if (index === 0 || index === 1) {
+              return (
+                <p
+                  key={line}
+                  className="text-3xl font-bold text-gray-300 mb-4 flex items-center space-x-2"
+                >
+                  {line}
+                </p>
+              );
+            } else {
+              return (
+                <Fragment key={line}>
+                  <br />
+                  <p className="text-lg leading-relaxed text-gray-400 whitespace-pre-line">
+                    {line}
+                  </p>
+                </Fragment>
+              );
+            }
+          })}
         </div>
 
         {/* Personal Info */}

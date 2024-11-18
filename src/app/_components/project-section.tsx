@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import { FaGithub, FaLink } from 'react-icons/fa';
 
 export default function ProjectsSection() {
   const [projectData, setProjectData] = useState<SideProjectProps[]>([]);
@@ -59,14 +60,14 @@ export default function ProjectsSection() {
                   </span>
                 ))}
               </div>
-              <div className="flex items-center space-x-4 mt-4">
+              <div className="flex items-center justify-center space-x-4 mt-4">
                 <a
                   href={project.github}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-mint hover:underline"
                 >
-                  GitHub
+                  <FaGithub />
                 </a>
                 <a
                   href={project.url}
@@ -74,7 +75,7 @@ export default function ProjectsSection() {
                   rel="noopener noreferrer"
                   className="text-mint hover:underline"
                 >
-                  Live Demo
+                  <FaLink />
                 </a>
               </div>
             </div>

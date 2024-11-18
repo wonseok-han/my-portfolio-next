@@ -30,16 +30,16 @@ export default function RootLayout({
       >
         <header className="sticky top-0 z-10 bg-dark border-b border-mint">
           <nav className="container mx-auto flex justify-between p-4">
-            <a href="#about-me" className="hover:text-white">
+            <a href="#about-me" className="hover:text-white font-semibold">
               About Me
             </a>
-            <a href="#skills" className="hover:text-white">
+            <a href="#skills" className="hover:text-white font-semibold">
               Skills
             </a>
-            <a href="#career" className="hover:text-white">
+            <a href="#career" className="hover:text-white font-semibold">
               Career
             </a>
-            <a href="#projects" className="hover:text-white">
+            <a href="#projects" className="hover:text-white font-semibold">
               Projects
             </a>
           </nav>
