@@ -2,27 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 
-type Project = {
-  key: string;
-  name: string;
-  term: string;
-  roles: string[];
-  man: string[];
-  skills: string[];
-  intro: string[];
-  result: string[];
-};
-
-type Company = {
-  key: string;
-  name: string;
-  term: string;
-  works: string[];
-  projects: Project[];
-};
-
 export default function CareerSection() {
-  const [careerData, setCareerData] = useState<Company[]>([]);
+  const [careerData, setCareerData] = useState<CompanyProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string | null>(null);
@@ -131,7 +112,7 @@ export default function CareerSection() {
                         <div className="text-gray-300 mb-4">
                           <h5 className="text-lg font-semibold mb-2">Team</h5>
                           <ul className="list-disc list-inside space-y-1">
-                            {project.man.map((member, index) => (
+                            {project?.man?.map((member, index) => (
                               <li key={index} className="text-sm">
                                 {member}
                               </li>
@@ -150,7 +131,7 @@ export default function CareerSection() {
                           <h5 className="text-lg font-semibold mb-2">
                             Outcome
                           </h5>
-                          <p>{project.result[0]}</p>
+                          <p>{project?.result?.[0]}</p>
                         </div>
                       </div>
 
