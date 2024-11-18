@@ -1,9 +1,15 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
-export default function SkillsSection() {
+interface SkillsSectionProps {
+  onDataLoaded: () => void;
+}
+
+export default memo(function SkillsSection({
+  onDataLoaded,
+}: SkillsSectionProps) {
   const [skillData, setSkillData] = useState<SkillProps[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -14,6 +20,7 @@ export default function SkillsSection() {
         const data = await response.json();
         setSkillData(data);
         setLoading(false);
+        onDataLoaded();
       } catch (error) {
         console.error('Failed to fetch skills data:', error);
         setLoading(false);
@@ -21,7 +28,7 @@ export default function SkillsSection() {
     };
 
     fetchSkillData();
-  }, []);
+  }, [onDataLoaded]);
 
   if (loading) {
     return <div className="text-center text-mint">Loading skills data...</div>;
@@ -73,4 +80,4 @@ export default function SkillsSection() {
       </div>
     </section>
   );
-}
+});

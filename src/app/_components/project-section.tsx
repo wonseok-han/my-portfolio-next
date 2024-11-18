@@ -1,10 +1,16 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { FaGithub, FaLink } from 'react-icons/fa';
 
-export default function ProjectsSection() {
+interface ProjectsSectionProps {
+  onDataLoaded: () => void;
+}
+
+export default memo(function ProjectsSection({
+  onDataLoaded,
+}: ProjectsSectionProps) {
   const [projectData, setProjectData] = useState<SideProjectProps[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -15,6 +21,7 @@ export default function ProjectsSection() {
         const data = await response.json();
         setProjectData(data);
         setLoading(false);
+        onDataLoaded();
       } catch (error) {
         console.error('Failed to fetch projects data:', error);
         setLoading(false);
@@ -22,7 +29,7 @@ export default function ProjectsSection() {
     };
 
     fetchProjectData();
-  }, []);
+  }, [onDataLoaded]);
 
   if (loading) {
     return (
@@ -96,4 +103,4 @@ export default function ProjectsSection() {
       </div>
     </section>
   );
-}
+});

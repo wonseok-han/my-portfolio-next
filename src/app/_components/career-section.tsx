@@ -1,8 +1,14 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
-export default function CareerSection() {
+interface CareerSectionProps {
+  onDataLoaded: () => void;
+}
+
+export default memo(function CareerSection({
+  onDataLoaded,
+}: CareerSectionProps) {
   const [careerData, setCareerData] = useState<CompanyProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -20,6 +26,7 @@ export default function CareerSection() {
         setCareerData(data);
         setLoading(false);
         setActiveTab(data[0].key);
+        onDataLoaded();
       } catch (error) {
         console.error('Failed to fetch career data:', error);
         setLoading(false);
@@ -27,7 +34,7 @@ export default function CareerSection() {
     };
 
     fetchCareerData();
-  }, []);
+  }, [onDataLoaded]);
 
   if (loading) {
     return <div className="text-center text-mint">Loading career data...</div>;
@@ -171,4 +178,4 @@ export default function CareerSection() {
       </div>
     </section>
   );
-}
+});

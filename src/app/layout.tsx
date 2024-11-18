@@ -45,7 +45,7 @@ export default function RootLayout({
             </a>
           </nav>
         </header>
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 relative">{children}</main>
         <footer className="bg-dark text-center py-4 border-t border-mint">
           {`© ${new Date().getFullYear()} wonseok-han's page`}
         </footer>

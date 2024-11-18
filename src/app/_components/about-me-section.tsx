@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Fragment, useEffect, useState } from 'react';
+import { Fragment, memo, useEffect, useState } from 'react';
 import {
   FaBirthdayCake,
   FaBuilding,
@@ -10,7 +10,11 @@ import {
   FaUser,
 } from 'react-icons/fa';
 
-export default function AboutMeSection() {
+interface AboutMeProps {
+  onDataLoaded: () => void;
+}
+
+export default memo(function AboutMeSection({ onDataLoaded }: AboutMeProps) {
   const [userData, setUserData] = useState<UserProps>();
   const [loading, setLoading] = useState(true);
 
@@ -21,6 +25,7 @@ export default function AboutMeSection() {
         const data = await response.json();
         setUserData(data);
         setLoading(false);
+        onDataLoaded();
       } catch (error) {
         console.error('Failed to fetch user data:', error);
         setLoading(false);
@@ -28,7 +33,7 @@ export default function AboutMeSection() {
     };
 
     fetchUserData();
-  }, []);
+  }, [onDataLoaded]);
 
   if (loading) {
     return <div className="text-center text-mint">Loading user data...</div>;
@@ -139,4 +144,4 @@ export default function AboutMeSection() {
       </div>
     </section>
   );
-}
+});
