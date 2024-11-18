@@ -1,3 +1,5 @@
+import CareerSection from '@components/career-section';
+
 export default function HomePage() {
   return (
     <div>
@@ -13,12 +15,9 @@ export default function HomePage() {
       >
         <h1 className="text-4xl">Skills</h1>
       </section>
-      <section
-        id="career"
-        className="h-screen flex items-center justify-center"
-      >
-        <h1 className="text-4xl">Career</h1>
-      </section>
+
+      <CareerSection />
+
       <section
         id="projects"
         className="h-screen flex items-center justify-center"
