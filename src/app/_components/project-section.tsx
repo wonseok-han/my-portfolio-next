@@ -24,13 +24,20 @@ export default function ProjectsSection() {
   }, []);
 
   if (loading) {
-    return <div className="text-center text-mint">Loading career data...</div>;
+    return (
+      <div className="text-center text-mint">Loading projects data...</div>
+    );
   }
 
   return (
-    <section id="projects" className="py-16 bg-dark text-grayLight">
+    <section
+      id="projects"
+      className="py-16 bg-dark text-grayLight min-h-svh flex items-center"
+    >
       <div className="container mx-auto px-4 space-y-8">
-        <h2 className="text-3xl font-bold mb-8 text-mint">Projects</h2>
+        <h2 className="text-3xl font-bold mb-8 text-mint text-center">
+          Projects
+        </h2>
         {projectData.map((project) => (
           <div
             key={project.key}
@@ -73,13 +80,12 @@ export default function ProjectsSection() {
             </div>
 
             {/* 오른쪽 이미지 영역 */}
-            <div className="md:w-1/2 relative h-64 md:h-auto">
+            <div className="md:w-1/2 relative h-auto aspect-video">
               {project?.image && (
                 <Image
                   src={project.image}
                   alt={project.name}
                   layout="fill"
-                  objectFit="cover"
                   className="rounded-lg"
                 />
               )}

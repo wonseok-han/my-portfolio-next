@@ -53,9 +53,14 @@ export default function CareerSection() {
   }
 
   return (
-    <section id="career" className="py-16 bg-dark text-grayLight">
+    <section
+      id="career"
+      className="py-16 bg-dark text-grayLight min-h-svh flex items-center"
+    >
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold mb-8 text-mint">Career</h2>
+        <h2 className="text-3xl font-bold mb-8 text-mint text-center">
+          Career
+        </h2>
 
         {/* 탭 메뉴 */}
         <div className="flex space-x-4 border-b border-gray-700 pb-2 mb-8">
