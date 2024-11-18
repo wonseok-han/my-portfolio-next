@@ -15,7 +15,7 @@ export default function ProjectsSection() {
         setProjectData(data);
         setLoading(false);
       } catch (error) {
-        console.error('Failed to fetch career data:', error);
+        console.error('Failed to fetch projects data:', error);
         setLoading(false);
       }
     };
@@ -35,7 +35,7 @@ export default function ProjectsSection() {
       className="py-16 bg-dark text-grayLight min-h-svh flex items-center"
     >
       <div className="container mx-auto px-4 space-y-8">
-        <h2 className="text-3xl font-bold mb-8 text-mint text-center">
+        <h2 className="text-3xl font-bold mb-12 text-mint text-center">
           Projects
         </h2>
         {projectData.map((project) => (

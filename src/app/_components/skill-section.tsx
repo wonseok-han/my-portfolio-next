@@ -15,7 +15,7 @@ export default function SkillsSection() {
         setSkillData(data);
         setLoading(false);
       } catch (error) {
-        console.error('Failed to fetch career data:', error);
+        console.error('Failed to fetch skills data:', error);
         setLoading(false);
       }
     };

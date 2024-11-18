@@ -58,7 +58,7 @@ export default function CareerSection() {
       className="py-16 bg-dark text-grayLight min-h-svh flex items-center"
     >
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold mb-8 text-mint text-center">
+        <h2 className="text-3xl font-bold mb-12 text-mint text-center">
           Career
         </h2>
 
