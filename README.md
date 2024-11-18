@@ -31,6 +31,4 @@ npm run build
 
 ### 배포환경
 
-* 완료되면 배포 예정
-
 * [**vercel**](https://vercel.com/)
