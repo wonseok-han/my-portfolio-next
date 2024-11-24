@@ -43,7 +43,7 @@ export default function RootLayout({
               Career
             </a>
             <a href="#projects" className="hover:text-white font-semibold">
-              Projects
+              Playgrounds
             </a>
           </nav>
         </header>

@@ -14,6 +14,26 @@ interface AboutMeProps {
   onDataLoaded: () => void;
 }
 
+const Skeleton = () => (
+  <div className="animate-pulse">
+    <div className="h-8 bg-gray-700 rounded mb-4 w-1/3 mx-auto"></div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {Array.from({ length: 6 }).map((_, index) => (
+        <div
+          key={index}
+          className="flex items-center space-x-4 p-4 bg-gray-800 rounded shadow-lg"
+        >
+          <div className="w-8 h-8 bg-gray-700 rounded-full"></div>
+          <div className="flex-1 space-y-2">
+            <div className="h-4 bg-gray-700 rounded w-1/2"></div>
+            <div className="h-4 bg-gray-700 rounded w-3/4"></div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
 export default memo(function AboutMeSection({ onDataLoaded }: AboutMeProps) {
   const [userData, setUserData] = useState<UserProps>();
   const [loading, setLoading] = useState(true);
@@ -36,7 +56,16 @@ export default memo(function AboutMeSection({ onDataLoaded }: AboutMeProps) {
   }, [onDataLoaded]);
 
   if (loading) {
-    return <div className="text-center text-mint">Loading user data...</div>;
+    return (
+      <section
+        id="about-me"
+        className="py-16 bg-dark text-grayLight min-h-svh flex items-center"
+      >
+        <div className="container mx-auto px-4 space-y-12 max-w-5xl">
+          <Skeleton />
+        </div>
+      </section>
+    );
   }
 
   return (

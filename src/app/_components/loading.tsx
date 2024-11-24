@@ -9,8 +9,8 @@ export default function Loading({ onComplete }: { onComplete: () => void }) {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsClosing(true); // 닫힘 애니메이션 시작
-      setTimeout(onComplete, 1500); // 애니메이션 완료 후 onComplete 호출
-    }, 3000); // 로딩 시간
+      setTimeout(onComplete, 0); // 애니메이션 완료 후 onComplete 호출
+    }, 100); // 로딩 시간
     return () => clearTimeout(timer);
   }, [onComplete]);
 

@@ -8,6 +8,36 @@ interface ProjectsSectionProps {
   onDataLoaded: () => void;
 }
 
+const Skeleton = () => (
+  <div className="space-y-8">
+    {Array.from({ length: 2 }).map((_, index) => (
+      <div
+        key={index}
+        className="flex flex-col md:flex-row bg-gray-800 rounded-lg overflow-hidden shadow-lg animate-pulse"
+      >
+        {/* 텍스트 영역 스켈레톤 */}
+        <div className="p-6 md:w-1/2 flex flex-col justify-center space-y-4">
+          <div className="h-6 bg-gray-700 w-3/4 rounded"></div>
+          <div className="h-4 bg-gray-700 w-full rounded"></div>
+          <div className="h-4 bg-gray-700 w-5/6 rounded"></div>
+          <div className="flex gap-2 mt-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="h-6 w-16 bg-gray-700 rounded"></div>
+            ))}
+          </div>
+          <div className="flex items-center space-x-4 mt-4">
+            <div className="h-6 w-6 bg-gray-700 rounded-full"></div>
+            <div className="h-6 w-6 bg-gray-700 rounded-full"></div>
+          </div>
+        </div>
+
+        {/* 이미지 영역 스켈레톤 */}
+        <div className="md:w-1/2 relative h-auto aspect-video bg-gray-700 rounded-lg"></div>
+      </div>
+    ))}
+  </div>
+);
+
 export default memo(function ProjectsSection({
   onDataLoaded,
 }: ProjectsSectionProps) {
@@ -33,7 +63,17 @@ export default memo(function ProjectsSection({
 
   if (loading) {
     return (
-      <div className="text-center text-mint">Loading projects data...</div>
+      <section
+        id="projects"
+        className="py-16 bg-dark text-grayLight min-h-svh flex items-center"
+      >
+        <div className="container mx-auto px-4 space-y-8">
+          <h2 className="text-3xl font-bold mb-12 text-mint text-center">
+            Playgrounds
+          </h2>
+          <Skeleton />
+        </div>
+      </section>
     );
   }
 
@@ -44,7 +84,7 @@ export default memo(function ProjectsSection({
     >
       <div className="container mx-auto px-4 space-y-8">
         <h2 className="text-3xl font-bold mb-12 text-mint text-center">
-          Projects
+          Playgrounds
         </h2>
         {projectData.map((project) => (
           <div

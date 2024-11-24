@@ -6,6 +6,41 @@ interface CareerSectionProps {
   onDataLoaded: () => void;
 }
 
+const Skeleton = () => (
+  <div>
+    {/* 탭 메뉴 스켈레톤 */}
+    <div className="flex space-x-4 border-b border-gray-700 pb-2 mb-8">
+      {Array.from({ length: 3 }).map((_, index) => (
+        <div
+          key={index}
+          className="h-8 w-32 bg-gray-700 rounded animate-pulse"
+        ></div>
+      ))}
+    </div>
+
+    {/* 탭 내용 스켈레톤 */}
+    <div className="space-y-6">
+      {Array.from({ length: 2 }).map((_, index) => (
+        <div
+          key={index}
+          className="p-6 bg-gray-800 rounded-lg shadow-lg animate-pulse"
+        >
+          <div className="h-6 bg-gray-700 w-48 mb-4 rounded"></div>
+          <div className="h-4 bg-gray-700 w-32 mb-2 rounded"></div>
+          <div className="space-y-2">
+            {Array.from({ length: 4 }).map((_, innerIndex) => (
+              <div
+                key={innerIndex}
+                className="h-4 bg-gray-700 w-full rounded"
+              ></div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
 export default memo(function CareerSection({
   onDataLoaded,
 }: CareerSectionProps) {
@@ -37,7 +72,19 @@ export default memo(function CareerSection({
   }, [onDataLoaded]);
 
   if (loading) {
-    return <div className="text-center text-mint">Loading career data...</div>;
+    return (
+      <section
+        id="career"
+        className="py-16 bg-dark text-grayLight min-h-svh flex items-center"
+      >
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold mb-12 text-mint text-center">
+            Career
+          </h2>
+          <Skeleton />
+        </div>
+      </section>
+    );
   }
 
   return (

@@ -7,6 +7,26 @@ interface SkillsSectionProps {
   onDataLoaded: () => void;
 }
 
+const Skeleton = () => (
+  <div className="space-y-16">
+    {Array.from({ length: 3 }).map((_, categoryIndex) => (
+      <div key={categoryIndex}>
+        {/* 카테고리 제목 스켈레톤 */}
+        <div className="h-6 bg-gray-700 w-32 mx-auto rounded mb-8"></div>
+        {/* 기술 아이콘 원형 스켈레톤 */}
+        <div className="flex flex-wrap justify-center gap-8">
+          {Array.from({ length: 6 }).map((_, skillIndex) => (
+            <div
+              key={skillIndex}
+              className="relative w-28 h-28 bg-gray-800 rounded-full animate-pulse"
+            ></div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
 export default memo(function SkillsSection({
   onDataLoaded,
 }: SkillsSectionProps) {
@@ -31,7 +51,19 @@ export default memo(function SkillsSection({
   }, [onDataLoaded]);
 
   if (loading) {
-    return <div className="text-center text-mint">Loading skills data...</div>;
+    return (
+      <section
+        id="skills"
+        className="py-16 min-h-svh bg-dark text-grayLight flex items-center"
+      >
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl font-bold mb-12 text-mint text-center">
+            Skills
+          </h2>
+          <Skeleton />
+        </div>
+      </section>
+    );
   }
 
   return (
