@@ -7,8 +7,18 @@
 
 * **NodeJS:** `v22.11.0` (LTS)
 * **PackageManager:** `npm`
+* **DataStorage:** `S3`
 
 ## Getting Started
+
+### 환경변수
+
+```plaintext
+S3_BUCKET_ACCESS_KEY=
+S3_BUCKET_SECRET_ACCESS_KEY=
+S3_AWS_REGION=
+S3_BUCKET_NAME=
+```
 
 ### 실행
 

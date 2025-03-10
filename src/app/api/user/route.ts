@@ -1,8 +1,21 @@
-import { userData } from '@data/user';
-import { sleep } from '@utils/promise';
 import { NextResponse } from 'next/server';
+import s3 from '@utils/s3';
+import { sleep } from '@utils/promise';
+
+const BUCKET_NAME = process.env.S3_BUCKET_NAME!;
+const FILE_KEY = 'portfolio/user.json';
 
 export async function GET() {
   await sleep(3000);
-  return NextResponse.json(userData);
+  try {
+    const data = await s3
+      .getObject({ Bucket: BUCKET_NAME, Key: FILE_KEY })
+      .promise();
+    const jsonData: UserProps = JSON.parse(data.Body!.toString());
+
+    return NextResponse.json(jsonData);
+  } catch (error) {
+    console.error('S3 getObject Error:', error);
+    return NextResponse.json({ error: 'getObject Error' }, { status: 500 });
+  }
 }

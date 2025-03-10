@@ -56,7 +56,7 @@ export default memo(function CareerSection({
   useEffect(() => {
     const fetchCareerData = async () => {
       try {
-        const response = await fetch('/api/career');
+        const response = await fetch('/api/careers');
         const data = await response.json();
         setCareerData(data);
         setLoading(false);
