@@ -26,9 +26,6 @@
       "@components/*": [
         "./src/app/_components/*"
       ],
-      "@data/*": [
-        "./src/data/*"
-      ],
       "@types/*": [
         "./src/types/*"
       ],
