@@ -1,5 +1,6 @@
 'use client';
 
+import useEmblaCarousel from 'embla-carousel-react';
 import { memo, useEffect, useState } from 'react';
 
 interface CareerSectionProps {
@@ -44,6 +45,8 @@ const Skeleton = () => (
 export default memo(function CareerSection({
   onDataLoaded,
 }: CareerSectionProps) {
+  const [emblaRef] = useEmblaCarousel();
+
   const [careerData, setCareerData] = useState<CompanyProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -98,20 +101,25 @@ export default memo(function CareerSection({
         </h2>
 
         {/* 탭 메뉴 */}
-        <div className="flex space-x-4 border-b border-gray-700 pb-2 mb-8">
-          {careerData.map((company) => (
-            <button
-              key={company.key}
-              onClick={() => setActiveTab(company.key)}
-              className={`px-4 py-2 text-sm font-bold ${
-                activeTab === company.key
-                  ? 'text-mint border-b-2 border-mint'
-                  : 'text-gray-400'
-              }`}
-            >
-              {company.name} ({company.term})
-            </button>
-          ))}
+        <div
+          className="overflow-hidden border-b border-gray-700 pb-2 mb-8"
+          ref={emblaRef}
+        >
+          <div className="flex flex-nowrap space-x-4 touch-pan-y touch-pinch-zoom">
+            {careerData.map((company) => (
+              <button
+                key={company.key}
+                onClick={() => setActiveTab(company.key)}
+                className={`px-4 py-2 text-sm font-bold grow-0 shrink-0 basis-[50%] min-w-fit transform translate-x-0 translate-y-0 will-change-transform text-nowrap ${
+                  activeTab === company.key
+                    ? 'text-mint border-b-2 border-mint'
+                    : 'text-gray-400'
+                }`}
+              >
+                {company.name} ({company.term})
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* 활성화된 탭 내용 */}
