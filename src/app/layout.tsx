@@ -17,6 +17,14 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "wonseok-han's portfolio",
   description: 'A portfolio of wonseok-han',
+  icons: {
+    icon: [
+      {
+        url: '/favicon.svg',
+        type: 'image/svg+xml',
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
