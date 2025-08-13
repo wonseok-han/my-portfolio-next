@@ -91,11 +91,11 @@ export default memo(function SkillsSection({
                   >
                     {/* 아이콘 */}
                     <Image
-                      src={skill.src}
+                      src={`/api/images${skill.src}`}
                       alt={skill.name}
                       width={48}
                       height={48}
-                      className="object-contain"
+                      className="object-contain w-12 h-12"
                     />
                     {/* Hover 텍스트 */}
                     <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 hover:opacity-100 rounded-full transition-opacity">

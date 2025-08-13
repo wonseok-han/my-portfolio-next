@@ -131,10 +131,11 @@ export default memo(function ProjectsSection({
             <div className="md:w-1/2 relative h-auto aspect-video">
               {project?.image && (
                 <Image
-                  src={project.image}
+                  src={`/api/images${project.image}`}
                   alt={project.name}
-                  layout="fill"
-                  className="rounded-lg"
+                  fill
+                  className="rounded-lg object-fill"
+                  sizes="(max-width: 768px) 100vw, 50vw"
                 />
               )}
             </div>
