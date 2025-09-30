@@ -4,6 +4,7 @@ interface UserProps {
   birthday: string;
   address: string;
   github: string;
+  linkedin: string;
   email: string;
   company: string;
 }
@@ -11,14 +12,13 @@ interface UserProps {
 type SkillType = {
   name: string;
   src: string;
+  score: number;
 };
 
 interface SkillProps {
   frontend: Array<SkillType>;
   backend: Array<SkillType>;
-  scm: Array<SkillType>;
-  database: Array<SkillType>;
-  blockchain: Array<SkillType>;
+  'devops&tools': Array<SkillType>;
 }
 
 interface CareerProjectProps {
@@ -36,6 +36,7 @@ interface CompanyProps {
   key: string;
   name: string;
   term: string;
+  position: string;
   works: Array<string>;
   projects: Array<CareerProjectProps>;
 }

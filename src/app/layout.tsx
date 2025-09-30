@@ -27,38 +27,25 @@ export const metadata: Metadata = {
   },
 };
 
+/**
+ * 루트 레이아웃 컴포넌트
+ * 애플리케이션의 전역 레이아웃을 정의합니다
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <meta name="robots" content="noindex, nofollow" />
+    <html lang="ko" className="dark" suppressHydrationWarning>
+      <head>
+        <meta name="robots" content="noindex, nofollow" />
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Analytics />
-        <header className="sticky top-0 z-10 bg-dark border-b border-mint">
-          <nav className="container mx-auto flex justify-between p-4">
-            <a href="#about-me" className="hover:text-white font-semibold">
-              About Me
-            </a>
-            <a href="#skills" className="hover:text-white font-semibold">
-              Skills
-            </a>
-            <a href="#career" className="hover:text-white font-semibold">
-              Career
-            </a>
-            <a href="#projects" className="hover:text-white font-semibold">
-              Playgrounds
-            </a>
-          </nav>
-        </header>
-        <main className="flex-1 relative">{children}</main>
-        <footer className="bg-dark text-center py-4 border-t border-mint">
-          {`© ${new Date().getFullYear()} wonseok-han's page`}
-        </footer>
+        {children}
       </body>
     </html>
   );
