@@ -4,7 +4,7 @@ import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import Link from 'next/link';
 
 interface FooterProps {
-  user: UserProps;
+  user: UserProps | null;
 }
 
 /**
@@ -15,17 +15,17 @@ const Footer = ({ user }: FooterProps) => {
   const currentYear = new Date().getFullYear();
 
   const socialLinks = [
-    user.github && {
+    user?.github && {
       icon: <FaGithub size={20} />,
       href: user.github,
       label: 'GitHub',
     },
-    user.linkedin && {
+    user?.linkedin && {
       icon: <FaLinkedin size={20} />,
       href: user.linkedin,
       label: 'LinkedIn',
     },
-    user.email && {
+    user?.email && {
       icon: <Mail size={20} />,
       href: `mailto:${user.email}`,
       label: 'Email',

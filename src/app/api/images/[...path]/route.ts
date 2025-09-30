@@ -25,7 +25,11 @@ export async function GET(
     // 이미지 타입 감지
     const contentType = data.ContentType || 'image/png';
 
-    return new NextResponse(data.Body as Buffer, {
+    // Buffer를 Uint8Array로 변환
+    const buffer = data.Body as Buffer;
+    const uint8Array = new Uint8Array(buffer);
+
+    return new NextResponse(uint8Array, {
       headers: {
         'Content-Type': contentType,
         'Cache-Control': 'public, max-age=31536000', // 1년 캐시

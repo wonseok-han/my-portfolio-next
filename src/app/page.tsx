@@ -7,6 +7,9 @@ import Contact from '@components/contact';
 import Footer from '@components/footer';
 import { Toaster } from '@/components/ui/sonner';
 
+// 동적 렌더링 설정
+export const dynamic = 'force-dynamic';
+
 /**
  * 서버 컴포넌트에서 데이터를 fetch
  */
@@ -15,10 +18,10 @@ async function fetchPortfolioData() {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
     const [userRes, skillsRes, careersRes, projectsRes] = await Promise.all([
-      fetch(`${baseUrl}/api/user`, { cache: 'no-store' }),
-      fetch(`${baseUrl}/api/skills`, { cache: 'no-store' }),
-      fetch(`${baseUrl}/api/careers`, { cache: 'no-store' }),
-      fetch(`${baseUrl}/api/projects`, { cache: 'no-store' }),
+      fetch(`${baseUrl}/api/user`, { next: { revalidate: 0 } }),
+      fetch(`${baseUrl}/api/skills`, { next: { revalidate: 0 } }),
+      fetch(`${baseUrl}/api/careers`, { next: { revalidate: 0 } }),
+      fetch(`${baseUrl}/api/projects`, { next: { revalidate: 0 } }),
     ]);
 
     const user = userRes.ok ? await userRes.json() : null;
