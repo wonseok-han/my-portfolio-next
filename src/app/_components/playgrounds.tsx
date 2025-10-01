@@ -92,7 +92,7 @@ const Playgrounds = ({ projects }: PlaygroundsProps) => {
                             key={introIndex}
                             className="flex items-start gap-2"
                           >
-                            <span className="text-emerald-500 mt-1">•</span>
+                            <span className="text-emerald-500">•</span>
                             <span>{intro}</span>
                           </li>
                         ))}
