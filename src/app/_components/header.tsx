@@ -11,14 +11,32 @@ import { Menu, X } from 'lucide-react';
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      const currentScrollY = window.scrollY;
+
+      // 스크롤 위치에 따른 배경 효과
+      setIsScrolled(currentScrollY > 20);
+
+      // 스크롤 방향에 따른 헤더 표시/숨김
+      if (currentScrollY < lastScrollY || currentScrollY < 100) {
+        // 스크롤 올릴 때 또는 최상단 근처일 때 표시
+        setIsVisible(true);
+      } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        // 스크롤 내릴 때 숨김
+        setIsVisible(false);
+        setIsMenuOpen(false); // 모바일 메뉴도 닫기
+      }
+
+      setLastScrollY(currentScrollY);
     };
-    window.addEventListener('scroll', handleScroll);
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [lastScrollY]);
 
   const navItems = [
     { name: 'About', id: 'about' },
@@ -40,7 +58,7 @@ const Header = () => {
         isScrolled
           ? 'bg-background/80 backdrop-blur-md border-b border-border'
           : 'bg-transparent'
-      }`}
+      } ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}
     >
       <div className="container mx-auto px-4 py-4">
         <nav className="flex items-center justify-between">
