@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 
 /**
  * 헤더 컴포넌트
@@ -48,15 +49,25 @@ const Header = () => {
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
-    element?.scrollIntoView({ behavior: 'smooth' });
-    setIsMenuOpen(false);
+    if (element) {
+      // 모바일 메뉴를 먼저 닫고 스크롤 시작
+      if (isMenuOpen) {
+        setIsMenuOpen(false);
+        // 메뉴 닫히는 애니메이션 후 스크롤 실행
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      } else {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
   };
 
   return (
     <header
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-background/80 backdrop-blur-md border-b border-border'
+        isScrolled || isMenuOpen
+          ? 'bg-background/95 backdrop-blur-md border-b border-border'
           : 'bg-transparent'
       } ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}
     >
@@ -95,27 +106,37 @@ const Header = () => {
         </nav>
 
         {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden mt-4 pb-4 border-t border-border">
-            <div className="flex flex-col space-y-4 pt-4">
-              {navItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  className="text-left text-muted-foreground hover:text-foreground transition-colors duration-200"
-                >
-                  {item.name}
-                </button>
-              ))}
-              <Button
-                onClick={() => scrollToSection('contact')}
-                className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 w-fit"
-              >
-                Get in Touch
-              </Button>
-            </div>
-          </div>
-        )}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="md:hidden overflow-hidden"
+            >
+              <div className="mt-4 pb-4 border-t border-border">
+                <div className="flex flex-col space-y-4 pt-4">
+                  {navItems.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => scrollToSection(item.id)}
+                      className="text-left text-muted-foreground hover:text-foreground transition-colors duration-200"
+                    >
+                      {item.name}
+                    </button>
+                  ))}
+                  <Button
+                    onClick={() => scrollToSection('contact')}
+                    className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 w-fit"
+                  >
+                    Get in Touch
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </header>
   );
