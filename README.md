@@ -8,16 +8,19 @@
 * **NodeJS:** `v22.11.0` (LTS)
 * **PackageManager:** `npm`
 * **DataStorage:** `S3`
+* **Mail**: `Resend`
 
 ## Getting Started
 
 ### 환경변수
 
 ```plaintext
-S3_BUCKET_ACCESS_KEY=
-S3_BUCKET_SECRET_ACCESS_KEY=
-S3_AWS_REGION=
-S3_BUCKET_NAME=
+CONTACT_EMAIL=your-email
+RESEND_API_KEY=your-resend-api-key
+S3_BUCKET_ACCESS_KEY=your-s3-bucket-access-key
+S3_BUCKET_SECRET_ACCESS_KEY=your-s3-bucket-secret-key
+S3_AWS_REGION=your-s3-aws-region
+S3_BUCKET_NAME=your-s3-bucket-name
 ```
 
 ### 실행
@@ -42,3 +45,7 @@ npm run build
 ### 배포환경
 
 * [**vercel**](https://vercel.com/)
+
+## 참고
+
+- https://resend.com/onboarding
