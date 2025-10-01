@@ -24,6 +24,7 @@ const Contact = ({ user }: ContactProps) => {
     email: '',
     message: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const contactInfo = [
     {
@@ -50,7 +51,7 @@ const Contact = ({ user }: ContactProps) => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Form validation
@@ -59,11 +60,37 @@ const Contact = ({ user }: ContactProps) => {
       return;
     }
 
-    // Simulate form submission
-    setTimeout(() => {
-      toast.success('메시지가 성공적으로 전송되었습니다!');
-      setFormData({ name: '', email: '', message: '' });
-    }, 1000);
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success('메시지가 성공적으로 전송되었습니다!', {
+          position: 'bottom-right',
+        });
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        toast.error(data.error || '메시지 전송에 실패했습니다.', {
+          position: 'bottom-right',
+        });
+      }
+    } catch (error) {
+      console.error('전송 오류:', error);
+      toast.error('메시지 전송 중 오류가 발생했습니다.', {
+        position: 'bottom-right',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const containerVariants = {
@@ -171,7 +198,7 @@ const Contact = ({ user }: ContactProps) => {
                       name="name"
                       value={formData.name}
                       onChange={handleInputChange}
-                      placeholder="홍길동"
+                      placeholder="성명을 입력해주세요. (예:홍길동)"
                       required
                     />
                   </div>
@@ -184,7 +211,7 @@ const Contact = ({ user }: ContactProps) => {
                       type="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      placeholder="hong@example.com"
+                      placeholder="회신받을 이메일을 입력해주세요. (예: hong@example.com)"
                       required
                     />
                   </div>
@@ -196,7 +223,7 @@ const Contact = ({ user }: ContactProps) => {
                       name="message"
                       value={formData.message}
                       onChange={handleInputChange}
-                      placeholder="프로젝트나 협업에 대해 자세히 알려주세요..."
+                      placeholder="문의사항을 입력해주세요...😊"
                       rows={5}
                       required
                     />
@@ -204,10 +231,11 @@ const Contact = ({ user }: ContactProps) => {
 
                   <Button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600"
+                    disabled={isSubmitting}
+                    className="w-full bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Send size={18} className="mr-2" />
-                    메시지 보내기
+                    {isSubmitting ? '전송 중...' : '메시지 보내기'}
                   </Button>
                 </form>
               </CardContent>
