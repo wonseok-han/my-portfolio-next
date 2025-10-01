@@ -12,12 +12,151 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer';
 import { Calendar, Building, TrendingUp, Briefcase, Eye } from 'lucide-react';
 import Image from 'next/image';
+import { useIsMobile } from '@/components/ui/use-mobile';
 
 interface CareerProps {
   careers?: CompanyProps[];
 }
+
+/**
+ * 프로젝트 상세보기 모달/드로어 컴포넌트
+ */
+const ProjectDetailModal = ({
+  project,
+  trigger,
+}: {
+  project: CareerProjectProps;
+  trigger: React.ReactNode;
+}) => {
+  const isMobile = useIsMobile();
+
+  const content = (
+    <div className="space-y-6 mt-4">
+      {/* Project Images */}
+      {project.images && project.images.length > 0 && (
+        <div className="grid grid-cols-3 gap-2">
+          {project.images.map((image, imgIndex) => (
+            <div
+              key={imgIndex}
+              className="relative aspect-video rounded overflow-hidden"
+            >
+              <Image
+                src={image}
+                alt={`${project.name} screenshot ${imgIndex + 1}`}
+                fill
+                className="object-cover"
+                unoptimized
+              />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Skills */}
+      {project.skills && project.skills.length > 0 && (
+        <div>
+          <h4 className="font-medium mb-2 text-sm">기술 스택</h4>
+          <div className="flex flex-wrap gap-2">
+            {project.skills.map((skill) => (
+              <Badge key={skill} variant="secondary">
+                {skill}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Roles */}
+      {project.roles && project.roles.length > 0 && (
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <Briefcase size={16} className="text-cyan-500" />
+            <h4 className="font-medium text-sm">담당 역할</h4>
+          </div>
+          <ul className="text-sm text-muted-foreground space-y-1">
+            {project.roles.map((role, roleIndex) => (
+              <li key={roleIndex} className="flex items-start gap-2">
+                <span className="text-cyan-500">•</span>
+                <span>{role}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Intro */}
+      {project.intro && project.intro.length > 0 && (
+        <div>
+          <h4 className="font-medium mb-2 text-sm">프로젝트 소개</h4>
+          <ul className="text-sm text-muted-foreground space-y-1">
+            {project.intro.map((intro, introIndex) => (
+              <li key={introIndex} className="flex items-start gap-2">
+                <span className="text-emerald-500">•</span>
+                <span>{intro}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Result */}
+      {project.result && project.result.length > 0 && (
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <TrendingUp size={16} className="text-emerald-500" />
+            <h4 className="font-medium text-sm">주요 성과</h4>
+          </div>
+          <ul className="text-sm text-muted-foreground space-y-1">
+            {project.result.map((result, resultIndex) => (
+              <li key={resultIndex} className="flex items-start gap-2">
+                <span className="text-emerald-500">•</span>
+                <span>{result}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+
+  if (isMobile) {
+    return (
+      <Drawer>
+        <DrawerTrigger asChild>{trigger}</DrawerTrigger>
+        <DrawerContent className="max-h-[85vh]">
+          <DrawerHeader>
+            <DrawerTitle>{project.name}</DrawerTitle>
+            <DrawerDescription>{project.term}</DrawerDescription>
+          </DrawerHeader>
+          <div className="overflow-y-auto px-4 pb-4">{content}</div>
+        </DrawerContent>
+      </Drawer>
+    );
+  }
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>{project.name}</DialogTitle>
+          <DialogDescription>{project.term}</DialogDescription>
+        </DialogHeader>
+        {content}
+      </DialogContent>
+    </Dialog>
+  );
+};
 
 /**
  * Career 섹션 컴포넌트
@@ -136,74 +275,76 @@ const Career = ({ careers }: CareerProps) => {
                           <h4 className="font-medium mb-3">주요 프로젝트</h4>
                           <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
                             {company.projects.map((project) => (
-                              <Dialog key={project.key}>
-                                <div className="border border-border rounded-lg p-4 bg-muted/20 hover:bg-muted/30 transition-colors">
-                                  <div className="flex justify-between items-start mb-2">
-                                    <h5 className="font-medium flex-1">
-                                      {project.name}
-                                    </h5>
-                                  </div>
-                                  <p className="text-xs text-muted-foreground mb-3">
-                                    {project.term}
-                                  </p>
+                              <ProjectDetailModal
+                                key={project.key}
+                                project={project}
+                                trigger={
+                                  <div className="border border-border rounded-lg p-4 bg-muted/20 hover:bg-muted/30 transition-colors cursor-pointer">
+                                    <div className="flex justify-between items-start mb-2">
+                                      <h5 className="font-medium flex-1">
+                                        {project.name}
+                                      </h5>
+                                    </div>
+                                    <p className="text-xs text-muted-foreground mb-3">
+                                      {project.term}
+                                    </p>
 
-                                  {/* Skills 미리보기 */}
-                                  {project.skills &&
-                                    project.skills.length > 0 && (
-                                      <div className="flex flex-wrap gap-1 mb-3">
-                                        {project.skills
-                                          .slice(0, 3)
-                                          .map((skill) => (
+                                    {/* Skills 미리보기 */}
+                                    {project.skills &&
+                                      project.skills.length > 0 && (
+                                        <div className="flex flex-wrap gap-1 mb-3">
+                                          {project.skills
+                                            .slice(0, 3)
+                                            .map((skill) => (
+                                              <Badge
+                                                key={skill}
+                                                variant="secondary"
+                                                className="text-xs"
+                                              >
+                                                {skill}
+                                              </Badge>
+                                            ))}
+                                          {project.skills.length > 3 && (
                                             <Badge
-                                              key={skill}
                                               variant="secondary"
                                               className="text-xs"
                                             >
-                                              {skill}
+                                              +{project.skills.length - 3}
                                             </Badge>
-                                          ))}
-                                        {project.skills.length > 3 && (
-                                          <Badge
-                                            variant="secondary"
-                                            className="text-xs"
-                                          >
-                                            +{project.skills.length - 3}
-                                          </Badge>
-                                        )}
-                                      </div>
-                                    )}
-
-                                  {/* 프로젝트 소개 미리보기 */}
-                                  {project.intro &&
-                                    project.intro.length > 0 && (
-                                      <div className="mb-3">
-                                        <ul className="text-sm text-muted-foreground space-y-1">
-                                          {project.intro
-                                            .slice(0, 2)
-                                            .map((intro, introIndex) => (
-                                              <li
-                                                key={introIndex}
-                                                className="flex items-start gap-2"
-                                              >
-                                                <span className="text-emerald-500 mt-1 text-xs">
-                                                  •
-                                                </span>
-                                                <span className="line-clamp-1 text-xs">
-                                                  {intro}
-                                                </span>
-                                              </li>
-                                            ))}
-                                          {project.intro.length > 2 && (
-                                            <li className="text-xs text-muted-foreground/60">
-                                              ...외 {project.intro.length - 2}개
-                                              항목
-                                            </li>
                                           )}
-                                        </ul>
-                                      </div>
-                                    )}
+                                        </div>
+                                      )}
 
-                                  <DialogTrigger asChild>
+                                    {/* 프로젝트 소개 미리보기 */}
+                                    {project.intro &&
+                                      project.intro.length > 0 && (
+                                        <div className="mb-3">
+                                          <ul className="text-sm text-muted-foreground space-y-1">
+                                            {project.intro
+                                              .slice(0, 2)
+                                              .map((intro, introIndex) => (
+                                                <li
+                                                  key={introIndex}
+                                                  className="flex items-start gap-2"
+                                                >
+                                                  <span className="text-emerald-500 mt-1 text-xs">
+                                                    •
+                                                  </span>
+                                                  <span className="line-clamp-1 text-xs">
+                                                    {intro}
+                                                  </span>
+                                                </li>
+                                              ))}
+                                            {project.intro.length > 2 && (
+                                              <li className="text-xs text-muted-foreground/60">
+                                                ...외 {project.intro.length - 2}
+                                                개 항목
+                                              </li>
+                                            )}
+                                          </ul>
+                                        </div>
+                                      )}
+
                                     <Button
                                       variant="outline"
                                       size="sm"
@@ -212,152 +353,9 @@ const Career = ({ careers }: CareerProps) => {
                                       <Eye size={14} className="mr-2" />
                                       상세보기
                                     </Button>
-                                  </DialogTrigger>
-                                </div>
-
-                                <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-                                  <DialogHeader>
-                                    <DialogTitle>{project.name}</DialogTitle>
-                                    <DialogDescription>
-                                      {project.term}
-                                    </DialogDescription>
-                                  </DialogHeader>
-
-                                  <div className="space-y-6 mt-4">
-                                    {/* Project Images */}
-                                    {project.images &&
-                                      project.images.length > 0 && (
-                                        <div className="grid grid-cols-3 gap-2">
-                                          {project.images.map(
-                                            (image, imgIndex) => (
-                                              <div
-                                                key={imgIndex}
-                                                className="relative aspect-video rounded overflow-hidden"
-                                              >
-                                                <Image
-                                                  src={image}
-                                                  alt={`${
-                                                    project.name
-                                                  } screenshot ${imgIndex + 1}`}
-                                                  fill
-                                                  className="object-cover"
-                                                  unoptimized
-                                                />
-                                              </div>
-                                            )
-                                          )}
-                                        </div>
-                                      )}
-
-                                    {/* Skills */}
-                                    {project.skills &&
-                                      project.skills.length > 0 && (
-                                        <div>
-                                          <h4 className="font-medium mb-2 text-sm">
-                                            기술 스택
-                                          </h4>
-                                          <div className="flex flex-wrap gap-2">
-                                            {project.skills.map((skill) => (
-                                              <Badge
-                                                key={skill}
-                                                variant="secondary"
-                                              >
-                                                {skill}
-                                              </Badge>
-                                            ))}
-                                          </div>
-                                        </div>
-                                      )}
-
-                                    {/* Intro */}
-                                    {project.intro &&
-                                      project.intro.length > 0 && (
-                                        <div>
-                                          <h4 className="font-medium mb-2 text-sm">
-                                            프로젝트 소개
-                                          </h4>
-                                          <ul className="text-sm text-muted-foreground space-y-1">
-                                            {project.intro.map(
-                                              (intro, introIndex) => (
-                                                <li
-                                                  key={introIndex}
-                                                  className="flex items-start gap-2"
-                                                >
-                                                  <span className="text-emerald-500">
-                                                    •
-                                                  </span>
-                                                  <span>{intro}</span>
-                                                </li>
-                                              )
-                                            )}
-                                          </ul>
-                                        </div>
-                                      )}
-
-                                    {/* Roles */}
-                                    {project.roles &&
-                                      project.roles.length > 0 && (
-                                        <div>
-                                          <div className="flex items-center gap-2 mb-2">
-                                            <Briefcase
-                                              size={16}
-                                              className="text-cyan-500"
-                                            />
-                                            <h4 className="font-medium text-sm">
-                                              담당 역할
-                                            </h4>
-                                          </div>
-                                          <ul className="text-sm text-muted-foreground space-y-1">
-                                            {project.roles.map(
-                                              (role, roleIndex) => (
-                                                <li
-                                                  key={roleIndex}
-                                                  className="flex items-start gap-2"
-                                                >
-                                                  <span className="text-cyan-500">
-                                                    •
-                                                  </span>
-                                                  <span>{role}</span>
-                                                </li>
-                                              )
-                                            )}
-                                          </ul>
-                                        </div>
-                                      )}
-
-                                    {/* Result */}
-                                    {project.result &&
-                                      project.result.length > 0 && (
-                                        <div>
-                                          <div className="flex items-center gap-2 mb-2">
-                                            <TrendingUp
-                                              size={16}
-                                              className="text-emerald-500"
-                                            />
-                                            <h4 className="font-medium text-sm">
-                                              주요 성과
-                                            </h4>
-                                          </div>
-                                          <ul className="text-sm text-muted-foreground space-y-1">
-                                            {project.result.map(
-                                              (result, resultIndex) => (
-                                                <li
-                                                  key={resultIndex}
-                                                  className="flex items-start gap-2"
-                                                >
-                                                  <span className="text-emerald-500">
-                                                    •
-                                                  </span>
-                                                  <span>{result}</span>
-                                                </li>
-                                              )
-                                            )}
-                                          </ul>
-                                        </div>
-                                      )}
                                   </div>
-                                </DialogContent>
-                              </Dialog>
+                                }
+                              />
                             ))}
                           </div>
                         </div>
