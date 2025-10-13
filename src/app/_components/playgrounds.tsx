@@ -77,11 +77,6 @@ const Playgrounds = ({ projects }: PlaygroundsProps) => {
                 )}
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg">{project.name}</CardTitle>
-                  {project.skills && (
-                    <p className="text-sm text-muted-foreground">
-                      {project.skills}
-                    </p>
-                  )}
                 </CardHeader>
                 <CardContent className="pt-0">
                   {project.intro && project.intro.length > 0 && (
