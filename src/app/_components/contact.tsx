@@ -186,7 +186,7 @@ const Contact = ({ user }: ContactProps) => {
           {/* Contact Form */}
           <motion.div variants={itemVariants}>
             <Card className="bg-card/50 backdrop-blur-sm">
-              <CardHeader>
+              <CardHeader className="px-3 pt-3">
                 <CardTitle>메시지 보내기</CardTitle>
               </CardHeader>
               <CardContent>
