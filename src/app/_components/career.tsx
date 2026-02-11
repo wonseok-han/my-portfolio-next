@@ -234,17 +234,17 @@ const Career = ({ careers }: CareerProps) => {
                     <CardHeader>
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                         <div>
-                          <CardTitle className="text-xl">
+                          <CardTitle className="text-xl p-2">
                             {company.position}
                           </CardTitle>
-                          <div className="flex items-center gap-2 mt-1">
+                          <div className="flex items-center gap-2 mt-1 px-2">
                             <Building size={16} className="text-emerald-500" />
                             <span className="text-sm text-muted-foreground">
                               {company.name}
                             </span>
                           </div>
                         </div>
-                        <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-1 text-sm text-muted-foreground p-2">
                           <Calendar size={14} />
                           <span>{company.term}</span>
                         </div>
