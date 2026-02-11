@@ -76,17 +76,20 @@ const Contact = ({ user }: ContactProps) => {
       if (response.ok) {
         toast.success('메시지가 성공적으로 전송되었습니다!', {
           position: 'bottom-right',
+          richColors: true,
         });
         setFormData({ name: '', email: '', message: '' });
       } else {
         toast.error(data.error || '메시지 전송에 실패했습니다.', {
           position: 'bottom-right',
+          richColors: true,
         });
       }
     } catch (error) {
       console.error('전송 오류:', error);
       toast.error('메시지 전송 중 오류가 발생했습니다.', {
         position: 'bottom-right',
+        richColors: true,
       });
     } finally {
       setIsSubmitting(false);
