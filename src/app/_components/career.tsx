@@ -217,7 +217,7 @@ const Career = ({ careers }: CareerProps) => {
               <motion.div
                 key={company.key}
                 variants={cardVariants}
-                className={`relative flex flex-col md:flex-row items-start md:items-center ${
+                className={`relative flex flex-col md:flex-row items-start ${
                   index % 2 === 0 ? 'md:flex-row-reverse' : ''
                 }`}
               >
