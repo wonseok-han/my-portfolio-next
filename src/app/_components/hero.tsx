@@ -128,11 +128,14 @@ const Hero = ({ user }: HeroProps) => {
           <motion.div className="relative" variants={itemVariants}>
             <div className="relative w-full max-w-md mx-auto">
               <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 rounded-2xl blur-3xl"></div>
-              <div className="relative rounded-full overflow-hidden border border-border">
+              <div className="relative rounded-full overflow-hidden border border-border aspect-square">
                 <ImageWithFallback
                   src="/api/images/assets/profile/profile_image.png"
                   alt="Developer workspace"
-                  className="w-full h-auto aspect-square object-cover"
+                  className="object-cover"
+                  priority={true}
+                  fill={true}
+                  showSkeleton={true}
                 />
               </div>
             </div>
