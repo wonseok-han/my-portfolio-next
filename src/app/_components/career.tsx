@@ -10,7 +10,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import {
   Drawer,
@@ -25,16 +24,9 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
-import {
-  Calendar,
-  Building,
-  TrendingUp,
-  Briefcase,
-  Eye,
-  ChevronDown,
-} from 'lucide-react';
+import { Calendar, Building, TrendingUp, Eye, ChevronDown } from 'lucide-react';
 import Image from 'next/image';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useIsMobile } from '@/components/ui/use-mobile';
 
 interface CareerProps {
@@ -219,23 +211,20 @@ const WorksCollapsible = ({ works }: { works: WorkItemProps[] }) => {
   const [isOpen, setIsOpen] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
 
-  const handleOpenChange = useCallback(
-    (open: boolean) => {
-      if (!open && sectionRef.current) {
-        const rect = sectionRef.current.getBoundingClientRect();
-        if (rect.top < 0) {
-          setTimeout(() => {
-            sectionRef.current?.scrollIntoView({
-              behavior: 'smooth',
-              block: 'start',
-            });
-          }, 500);
-        }
+  const handleOpenChange = useCallback((open: boolean) => {
+    if (!open && sectionRef.current) {
+      const rect = sectionRef.current.getBoundingClientRect();
+      if (rect.top < 0) {
+        setTimeout(() => {
+          sectionRef.current?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          });
+        }, 500);
       }
-      setIsOpen(open);
-    },
-    []
-  );
+    }
+    setIsOpen(open);
+  }, []);
 
   return (
     <Collapsible ref={sectionRef} open={isOpen} onOpenChange={handleOpenChange}>
@@ -310,9 +299,7 @@ const ProjectCard = ({
     </h5>
     <div className="flex items-center gap-1.5 mb-2">
       <Calendar size={11} className="text-muted-foreground" />
-      <span className="text-[11px] text-muted-foreground">
-        {project.term}
-      </span>
+      <span className="text-[11px] text-muted-foreground">{project.term}</span>
     </div>
 
     {project.intro && project.intro.length > 0 && (
@@ -436,6 +423,27 @@ const ProjectsCollapsible = ({
  * 경력 사항을 타임라인 형태로 표시합니다
  */
 const Career = ({ careers }: CareerProps) => {
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!timelineRef.current) return;
+      const rect = timelineRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      const totalHeight = rect.height;
+
+      // 타임라인 영역이 뷰포트에 들어온 정도를 계산
+      const entered = windowHeight - rect.top;
+      const ratio = Math.max(0, Math.min(1, entered / (totalHeight + windowHeight * 0.5)));
+      setProgress(ratio);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -476,16 +484,22 @@ const Career = ({ careers }: CareerProps) => {
         </motion.div>
 
         <motion.div
+          ref={timelineRef}
           className="relative"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
         >
-          {/* Timeline line */}
-          <div className="absolute left-4 md:left-1/2 md:transform md:-translate-x-px top-0 bottom-0 w-0.5 bg-gradient-to-b from-emerald-500 via-cyan-500 to-emerald-500"></div>
+          {/* Timeline line - 배경 트랙 */}
+          <div className="absolute left-4 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-0.5 bg-border/40" />
+          {/* Timeline line - 스크롤 진행선 */}
+          <div
+            className="absolute left-4 md:left-1/2 md:-translate-x-px top-0 w-0.5 bg-emerald-500 will-change-transform origin-top"
+            style={{ height: '100%', transform: `scaleY(${progress})` }}
+          />
 
-          <div className="space-y-12">
+          <div className="space-y-16">
             {careers.map((company, index) => (
               <motion.div
                 key={company.key}
@@ -495,7 +509,30 @@ const Career = ({ careers }: CareerProps) => {
                 }`}
               >
                 {/* Timeline dot */}
-                <div className="absolute left-2 md:left-1/2 md:transform md:-translate-x-1/2 w-4 h-4 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full border-4 border-background z-10"></div>
+                <div className="absolute left-0 md:left-1/2 md:-translate-x-1/2 top-0 md:bottom-0 z-10 flex justify-center">
+                  <div className="md:sticky md:top-1/2 md:-translate-y-1/2 flex items-center gap-3 h-fit">
+                    {/* 도트 */}
+                    <div className="relative flex items-center justify-center">
+                      <div className="absolute w-8 h-8 rounded-full bg-emerald-500/20 animate-timeline-ping" />
+                      <div className="w-7 h-7 rounded-full border-2 border-emerald-500/40 bg-background flex items-center justify-center">
+                        <div className="w-3 h-3 rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500" />
+                      </div>
+                    </div>
+                    {/* 회사명 + 기간 라벨 */}
+                    <div
+                      className={`hidden md:flex flex-col absolute top-1/2 -translate-y-1/2 ${
+                        index % 2 === 0 ? 'right-full mr-3' : 'left-full ml-3'
+                      }`}
+                    >
+                      <span className="text-[11px] font-semibold text-foreground/80 whitespace-nowrap">
+                        {company.name}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground whitespace-nowrap">
+                        {company.term}
+                      </span>
+                    </div>
+                  </div>
+                </div>
 
                 {/* Content */}
                 <div

@@ -113,6 +113,11 @@ export default {
           from: { opacity: '1' },
           to: { opacity: '0' },
         },
+        'timeline-ping': {
+          '0%': { transform: 'scale(1)', opacity: '0.6' },
+          '75%': { transform: 'scale(2)', opacity: '0' },
+          '100%': { transform: 'scale(2)', opacity: '0' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -126,6 +131,7 @@ export default {
           'dialog-zoom-out 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards',
         'overlay-in': 'overlay-in 0.3s ease-out forwards',
         'overlay-out': 'overlay-out 0.2s ease-out forwards',
+        'timeline-ping': 'timeline-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite',
       },
     },
   },
