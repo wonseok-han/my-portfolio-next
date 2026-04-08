@@ -494,6 +494,10 @@ const Career = ({ careers }: CareerProps) => {
           whileInView="visible"
           viewport={{ once: true }}
         >
+          {/* Timeline 상단 삼각형 마커 */}
+          <div className="absolute left-4 md:left-1/2 -translate-x-[calc(50%-1px)] -top-8">
+            <div className="w-5 h-5 bg-emerald-500 animate-bounce" style={{ clipPath: 'polygon(50% 0%, 100% 100%, 50% 65%, 0% 100%)' }} />
+          </div>
           {/* Timeline line - 배경 트랙 */}
           <div className="absolute left-4 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-0.5 bg-border/40" />
           {/* Timeline line - 스크롤 진행선 */}
