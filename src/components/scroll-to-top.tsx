@@ -10,7 +10,7 @@ export function ScrollToTopButton({ className }: { className?: string }) {
 
   return (
     <button onClick={scrollToTop} className={className}>
-      Portfolio
+      한 번 더 볼래요?
     </button>
   );
 }

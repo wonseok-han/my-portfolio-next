@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 /**
@@ -63,7 +62,7 @@ const Header = () => {
     }
   };
 
-  return (
+  const headerElement = (
     <header
       className={`fixed top-0 w-full z-50 transition-all duration-300 ${
         isScrolled || isMenuOpen
@@ -73,9 +72,12 @@ const Header = () => {
     >
       <div className="container mx-auto px-4 py-4">
         <nav className="flex items-center justify-between">
-          <div className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent cursor-pointer hover:scale-105 transition-transform duration-200"
+          >
             Portfolio
-          </div>
+          </button>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
@@ -83,17 +85,11 @@ const Header = () => {
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className="text-muted-foreground hover:text-foreground transition-colors duration-200"
+                className="text-muted-foreground hover:text-foreground hover:font-semibold transition-all duration-200"
               >
                 {item.name}
               </button>
             ))}
-            <Button
-              onClick={() => scrollToSection('contact')}
-              className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600"
-            >
-              Get in Touch
-            </Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -121,17 +117,11 @@ const Header = () => {
                     <button
                       key={item.id}
                       onClick={() => scrollToSection(item.id)}
-                      className="text-left text-muted-foreground hover:text-foreground transition-colors duration-200"
+                      className="text-left text-muted-foreground hover:text-foreground hover:font-semibold transition-all duration-200"
                     >
                       {item.name}
                     </button>
                   ))}
-                  <Button
-                    onClick={() => scrollToSection('contact')}
-                    className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 w-fit"
-                  >
-                    Get in Touch
-                  </Button>
                 </div>
               </div>
             </motion.div>
@@ -139,6 +129,36 @@ const Header = () => {
         </AnimatePresence>
       </div>
     </header>
+  );
+
+  const headerToggle = (
+    <AnimatePresence>
+      {!isVisible && (
+        <motion.button
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.2 }}
+          onClick={() => setIsVisible(true)}
+          className="fixed top-3 left-1/2 -translate-x-1/2 z-50 flex items-center gap-1.5 py-1.5 px-4 rounded-full bg-background/90 backdrop-blur-md border border-border cursor-pointer group hover:scale-105 transition-transform duration-200"
+        >
+          <span className="text-[11px] font-bold bg-gradient-to-r from-emerald-500 to-cyan-500 bg-clip-text text-transparent">
+            어디로 갈까요?
+          </span>
+          <ChevronDown
+            size={14}
+            className="text-emerald-500/60 group-hover:text-emerald-500 animate-bounce transition-colors"
+          />
+        </motion.button>
+      )}
+    </AnimatePresence>
+  );
+
+  return (
+    <>
+      {headerElement}
+      {headerToggle}
+    </>
   );
 };
 
