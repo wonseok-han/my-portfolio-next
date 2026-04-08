@@ -435,7 +435,10 @@ const Career = ({ careers }: CareerProps) => {
 
       // 타임라인 영역이 뷰포트에 들어온 정도를 계산
       const entered = windowHeight - rect.top;
-      const ratio = Math.max(0, Math.min(1, entered / (totalHeight + windowHeight * 0.5)));
+      const ratio = Math.max(
+        0,
+        Math.min(1, entered / (totalHeight + windowHeight * 0.5))
+      );
       setProgress(ratio);
     };
 
@@ -541,7 +544,7 @@ const Career = ({ careers }: CareerProps) => {
                   }`}
                 >
                   <Card className="bg-card/50 backdrop-blur-sm hover:border-emerald-500/25 hover:shadow-[0_0_12px_rgba(16,185,129,0.08)] hover:scale-[1.005] transition-all duration-300">
-                    <CardHeader>
+                    <CardHeader className="p-6 pb-0">
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                         <div>
                           <CardTitle className="text-xl p-2">
@@ -560,6 +563,7 @@ const Career = ({ careers }: CareerProps) => {
                         </div>
                       </div>
                     </CardHeader>
+                    <div className="mx-6 h-px bg-[linear-gradient(to_right,transparent_5%,rgb(16_185_129/0.7)_30%,rgb(16_185_129/0.7)_70%,transparent_95%)]" />
                     <CardContent className="space-y-6">
                       {/* Description */}
                       {company.description && (
