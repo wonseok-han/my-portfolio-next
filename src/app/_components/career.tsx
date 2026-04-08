@@ -20,8 +20,21 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer';
-import { Calendar, Building, TrendingUp, Briefcase, Eye } from 'lucide-react';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
+import {
+  Calendar,
+  Building,
+  TrendingUp,
+  Briefcase,
+  Eye,
+  ChevronDown,
+} from 'lucide-react';
 import Image from 'next/image';
+import { useCallback, useRef, useState } from 'react';
 import { useIsMobile } from '@/components/ui/use-mobile';
 
 interface CareerProps {
@@ -39,9 +52,23 @@ const ProjectDetailModal = ({
   trigger: React.ReactNode;
 }) => {
   const isMobile = useIsMobile();
+  const [isOpen, setIsOpen] = useState(false);
+  const [dialogOrigin, setDialogOrigin] = useState({ x: 0, y: 0 });
+
+  const handleTriggerClick = useCallback((e: React.MouseEvent) => {
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const btnX = rect.left + rect.width / 2;
+    const btnY = rect.top + rect.height / 2;
+
+    setDialogOrigin({
+      x: btnX - window.innerWidth / 2,
+      y: btnY - window.innerHeight / 2,
+    });
+    setIsOpen(true);
+  }, []);
 
   const content = (
-    <div className="space-y-6 mt-4">
+    <div className="space-y-5 mt-2">
       {/* Project Images */}
       {project.images && project.images.length > 0 && (
         <div className="grid grid-cols-3 gap-2">
@@ -62,10 +89,27 @@ const ProjectDetailModal = ({
         </div>
       )}
 
+      {/* Intro */}
+      {project.intro && project.intro.length > 0 && (
+        <div className="rounded-lg bg-muted/40 p-4">
+          <ul className="text-sm text-muted-foreground space-y-1">
+            {project.intro.map((intro, introIndex) => (
+              <li key={introIndex} className="flex items-start gap-2">
+                <span className="text-emerald-500">•</span>
+                <span>{intro}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {/* Skills */}
       {project.skills && project.skills.length > 0 && (
         <div>
-          <h4 className="font-medium mb-2 text-sm">기술 스택</h4>
+          <h4 className="font-medium mb-2.5 text-sm flex items-center gap-2">
+            <span className="h-4 w-1 rounded-full bg-gradient-to-b from-emerald-500 to-cyan-500" />
+            기술 스택
+          </h4>
           <div className="flex flex-wrap gap-2">
             {project.skills.map((skill) => (
               <Badge key={skill} variant="secondary">
@@ -79,30 +123,15 @@ const ProjectDetailModal = ({
       {/* Roles */}
       {project.roles && project.roles.length > 0 && (
         <div>
-          <div className="flex items-center gap-2 mb-2">
-            <Briefcase size={16} className="text-cyan-500" />
-            <h4 className="font-medium text-sm">담당 역할</h4>
-          </div>
-          <ul className="text-sm text-muted-foreground space-y-1">
+          <h4 className="font-medium mb-2.5 text-sm flex items-center gap-2">
+            <span className="h-4 w-1 rounded-full bg-gradient-to-b from-cyan-500 to-emerald-500" />
+            담당 역할
+          </h4>
+          <ul className="text-sm text-muted-foreground space-y-2">
             {project.roles.map((role, roleIndex) => (
               <li key={roleIndex} className="flex items-start gap-2">
-                <span className="text-cyan-500">•</span>
+                <span className="text-cyan-500 mt-0.5">•</span>
                 <span>{role}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {/* Intro */}
-      {project.intro && project.intro.length > 0 && (
-        <div>
-          <h4 className="font-medium mb-2 text-sm">프로젝트 소개</h4>
-          <ul className="text-sm text-muted-foreground space-y-1">
-            {project.intro.map((intro, introIndex) => (
-              <li key={introIndex} className="flex items-start gap-2">
-                <span className="text-emerald-500">•</span>
-                <span>{intro}</span>
               </li>
             ))}
           </ul>
@@ -111,15 +140,15 @@ const ProjectDetailModal = ({
 
       {/* Result */}
       {project.result && project.result.length > 0 && (
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <TrendingUp size={16} className="text-emerald-500" />
-            <h4 className="font-medium text-sm">주요 성과</h4>
-          </div>
-          <ul className="text-sm text-muted-foreground space-y-1">
+        <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-4">
+          <h4 className="font-medium mb-2 text-sm flex items-center gap-2">
+            <TrendingUp size={14} className="text-emerald-500" />
+            주요 성과
+          </h4>
+          <ul className="text-sm text-muted-foreground space-y-1.5">
             {project.result.map((result, resultIndex) => (
               <li key={resultIndex} className="flex items-start gap-2">
-                <span className="text-emerald-500">•</span>
+                <span className="text-emerald-500 mt-0.5">•</span>
                 <span>{result}</span>
               </li>
             ))}
@@ -129,14 +158,25 @@ const ProjectDetailModal = ({
     </div>
   );
 
+  const header = (
+    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+      <Calendar size={12} />
+      <span>{project.term}</span>
+    </div>
+  );
+
   if (isMobile) {
     return (
-      <Drawer>
-        <DrawerTrigger asChild>{trigger}</DrawerTrigger>
+      <Drawer open={isOpen} onOpenChange={setIsOpen}>
+        <DrawerTrigger asChild>
+          <div onClick={handleTriggerClick}>{trigger}</div>
+        </DrawerTrigger>
         <DrawerContent className="max-h-[85vh]">
           <DrawerHeader>
             <DrawerTitle>{project.name}</DrawerTitle>
-            <DrawerDescription>{project.term}</DrawerDescription>
+            <DrawerDescription asChild>
+              <div>{header}</div>
+            </DrawerDescription>
           </DrawerHeader>
           <div className="overflow-y-auto px-4 pb-4">{content}</div>
         </DrawerContent>
@@ -145,16 +185,249 @@ const ProjectDetailModal = ({
   }
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <div onClick={handleTriggerClick}>{trigger}</div>
+      <DialogContent
+        className="max-w-4xl max-h-[90vh] overflow-y-auto"
+        style={
+          {
+            '--dialog-origin-x': `${dialogOrigin.x}px`,
+            '--dialog-origin-y': `${dialogOrigin.y}px`,
+          } as React.CSSProperties
+        }
+      >
         <DialogHeader>
-          <DialogTitle>{project.name}</DialogTitle>
-          <DialogDescription>{project.term}</DialogDescription>
+          <DialogTitle className="text-xl pr-8">{project.name}</DialogTitle>
+          <DialogDescription asChild>
+            <div>{header}</div>
+          </DialogDescription>
         </DialogHeader>
+        <div className="h-px bg-gradient-to-r from-emerald-500/60 via-cyan-500/60 to-emerald-500/60" />
         {content}
       </DialogContent>
     </Dialog>
+  );
+};
+
+/**
+ * 주요 업무 및 성과 Collapsible 컴포넌트
+ */
+const WorksCollapsible = ({ works }: { works: WorkItemProps[] }) => {
+  const hasDetails = works.some(
+    (work) => work.details && work.details.length > 0
+  );
+  const [isOpen, setIsOpen] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  const handleOpenChange = useCallback(
+    (open: boolean) => {
+      if (!open && sectionRef.current) {
+        const rect = sectionRef.current.getBoundingClientRect();
+        if (rect.top < 0) {
+          setTimeout(() => {
+            sectionRef.current?.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start',
+            });
+          }, 500);
+        }
+      }
+      setIsOpen(open);
+    },
+    []
+  );
+
+  return (
+    <Collapsible ref={sectionRef} open={isOpen} onOpenChange={handleOpenChange}>
+      <h4 className="font-medium mb-3">주요 업무 및 성과</h4>
+      <div className="relative">
+        <ul className="text-sm text-muted-foreground space-y-3">
+          {works.map((work, workIndex) => (
+            <li key={workIndex}>
+              <div className="flex items-start gap-2">
+                <span className="text-emerald-500">•</span>
+                <span className="font-medium text-foreground">
+                  {work.title}
+                </span>
+              </div>
+              {work.details && work.details.length > 0 && (
+                <CollapsibleContent>
+                  <ul className="ml-6 mt-1 space-y-1">
+                    {work.details.map((detail, detailIndex) => (
+                      <li key={detailIndex} className="flex items-start gap-2">
+                        <span className="text-cyan-500">-</span>
+                        <span>{detail}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CollapsibleContent>
+              )}
+            </li>
+          ))}
+        </ul>
+        {hasDetails && !isOpen && (
+          <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-card to-transparent pointer-events-none" />
+        )}
+      </div>
+      {hasDetails && (
+        <CollapsibleTrigger asChild>
+          <button className="flex items-center justify-center gap-1.5 w-full pt-2 group">
+            <span className="text-xs font-bold bg-gradient-to-r from-emerald-500 to-cyan-500 bg-clip-text text-transparent animate-bounce">
+              {isOpen ? '접을까요?' : '더 있어요!'}
+            </span>
+            <ChevronDown
+              size={18}
+              className="text-muted-foreground transition-transform duration-300 group-hover:text-foreground data-[open=true]:rotate-180"
+              data-open={isOpen}
+            />
+          </button>
+        </CollapsibleTrigger>
+      )}
+    </Collapsible>
+  );
+};
+
+/**
+ * 프로젝트 카드 컴포넌트
+ */
+const ProjectCard = ({
+  project,
+  side = 'left',
+}: {
+  project: CareerProjectProps;
+  side?: 'left' | 'right';
+}) => (
+  <div className="group relative rounded-xl border border-border bg-card/50 backdrop-blur-sm p-5 transition-all duration-300 hover:border-emerald-500/30 hover:shadow-md hover:shadow-emerald-500/5">
+    {/* 그라데이션 바 - 타임라인 방향을 향함 */}
+    <div
+      className={`absolute top-4 bottom-4 w-0.5 rounded-full bg-gradient-to-b from-emerald-500 to-cyan-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
+        side === 'right' ? 'right-0' : 'left-0'
+      }`}
+    />
+
+    <h5 className="font-semibold text-sm leading-snug mb-1.5">
+      {project.name}
+    </h5>
+    <div className="flex items-center gap-1.5 mb-2">
+      <Calendar size={11} className="text-muted-foreground" />
+      <span className="text-[11px] text-muted-foreground">
+        {project.term}
+      </span>
+    </div>
+
+    {project.intro && project.intro.length > 0 && (
+      <p className="text-xs text-muted-foreground line-clamp-2 mb-3 leading-relaxed">
+        {project.intro[0]}
+      </p>
+    )}
+
+    {project.skills && project.skills.length > 0 && (
+      <div className="flex flex-wrap gap-1.5 mb-4">
+        {project.skills.slice(0, 4).map((skill) => (
+          <span
+            key={skill}
+            className="text-[11px] px-2 py-0.5 rounded-md bg-muted/60 text-muted-foreground"
+          >
+            {skill}
+          </span>
+        ))}
+        {project.skills.length > 4 && (
+          <span className="text-[11px] px-2 py-0.5 rounded-md bg-muted/40 text-muted-foreground/60">
+            +{project.skills.length - 4}
+          </span>
+        )}
+      </div>
+    )}
+
+    <ProjectDetailModal
+      project={project}
+      trigger={
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full cursor-pointer border-emerald-500/20 hover:border-emerald-500/40 hover:bg-emerald-500/5 transition-colors"
+        >
+          <Eye size={14} className="mr-2" />
+          상세보기
+        </Button>
+      }
+    />
+  </div>
+);
+
+/**
+ * 프로젝트 Collapsible 컴포넌트
+ */
+const ProjectsCollapsible = ({
+  projects,
+  side = 'left',
+}: {
+  projects: CareerProjectProps[];
+  side?: 'left' | 'right';
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const featuredProjects = projects.filter((p) => p.featured);
+  const otherProjects = projects.filter((p) => !p.featured);
+  const hasOthers = otherProjects.length > 0;
+  // 기본 0.3s + 프로젝트당 0.15s, 최대 1.5s
+  const duration = Math.min(0.3 + otherProjects.length * 0.15, 1.5);
+
+  const handleOpenChange = useCallback(
+    (open: boolean) => {
+      if (!open && sectionRef.current) {
+        const rect = sectionRef.current.getBoundingClientRect();
+        if (rect.top < 0) {
+          setTimeout(() => {
+            sectionRef.current?.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start',
+            });
+          }, duration * 1000);
+        }
+      }
+      setIsOpen(open);
+    },
+    [duration]
+  );
+
+  return (
+    <Collapsible ref={sectionRef} open={isOpen} onOpenChange={handleOpenChange}>
+      <h4 className="font-medium mb-3">진행했던 프로젝트</h4>
+      <div className="relative">
+        <div className="grid grid-cols-1 gap-4">
+          {featuredProjects.map((project) => (
+            <ProjectCard key={project.key} project={project} side={side} />
+          ))}
+        </div>
+        {hasOthers && !isOpen && (
+          <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-card to-transparent pointer-events-none" />
+        )}
+      </div>
+      {hasOthers && (
+        <>
+          <CollapsibleContent duration={duration}>
+            <div className="grid grid-cols-1 gap-4 pt-4">
+              {otherProjects.map((project) => (
+                <ProjectCard key={project.key} project={project} side={side} />
+              ))}
+            </div>
+          </CollapsibleContent>
+          <CollapsibleTrigger asChild>
+            <button className="flex items-center justify-center gap-1.5 w-full pt-3 group">
+              <span className="text-xs font-bold bg-gradient-to-r from-emerald-500 to-cyan-500 bg-clip-text text-transparent animate-bounce">
+                {isOpen ? '접을까요?' : '더 있어요!'}
+              </span>
+              <ChevronDown
+                size={18}
+                className="text-muted-foreground transition-transform duration-300 group-hover:text-foreground data-[open=true]:rotate-180"
+                data-open={isOpen}
+              />
+            </button>
+          </CollapsibleTrigger>
+        </>
+      )}
+    </Collapsible>
   );
 };
 
@@ -230,7 +503,7 @@ const Career = ({ careers }: CareerProps) => {
                     index % 2 !== 0 ? 'md:pr-8' : 'md:pl-8'
                   }`}
                 >
-                  <Card className="bg-card/50 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
+                  <Card className="bg-card/50 backdrop-blur-sm hover:border-emerald-500/25 hover:shadow-[0_0_12px_rgba(16,185,129,0.08)] hover:scale-[1.005] transition-all duration-300">
                     <CardHeader>
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                         <div>
@@ -251,114 +524,24 @@ const Career = ({ careers }: CareerProps) => {
                       </div>
                     </CardHeader>
                     <CardContent className="space-y-6">
+                      {/* Description */}
+                      {company.description && (
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          {company.description}
+                        </p>
+                      )}
+
                       {/* Works */}
                       {company.works && company.works.length > 0 && (
-                        <div>
-                          <h4 className="font-medium mb-3">주요 업무</h4>
-                          <ul className="text-sm text-muted-foreground space-y-1">
-                            {company.works.map((work, workIndex) => (
-                              <li
-                                key={workIndex}
-                                className="flex items-start gap-2"
-                              >
-                                <span className="text-emerald-500">•</span>
-                                <span>{work}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
+                        <WorksCollapsible works={company.works} />
                       )}
 
                       {/* Projects */}
                       {company.projects && company.projects.length > 0 && (
-                        <div>
-                          <h4 className="font-medium mb-3">주요 프로젝트</h4>
-                          <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
-                            {company.projects.map((project) => (
-                              <ProjectDetailModal
-                                key={project.key}
-                                project={project}
-                                trigger={
-                                  <div className="border border-border rounded-lg p-4 bg-muted/20 hover:bg-muted/30 transition-colors cursor-pointer">
-                                    <div className="flex justify-between items-start mb-2">
-                                      <h5 className="font-medium flex-1">
-                                        {project.name}
-                                      </h5>
-                                    </div>
-                                    <p className="text-xs text-muted-foreground mb-3">
-                                      {project.term}
-                                    </p>
-
-                                    {/* Skills 미리보기 */}
-                                    {project.skills &&
-                                      project.skills.length > 0 && (
-                                        <div className="flex flex-wrap gap-1 mb-3">
-                                          {project.skills
-                                            .slice(0, 3)
-                                            .map((skill) => (
-                                              <Badge
-                                                key={skill}
-                                                variant="secondary"
-                                                className="text-xs"
-                                              >
-                                                {skill}
-                                              </Badge>
-                                            ))}
-                                          {project.skills.length > 3 && (
-                                            <Badge
-                                              variant="secondary"
-                                              className="text-xs"
-                                            >
-                                              +{project.skills.length - 3}
-                                            </Badge>
-                                          )}
-                                        </div>
-                                      )}
-
-                                    {/* 프로젝트 소개 미리보기 */}
-                                    {project.intro &&
-                                      project.intro.length > 0 && (
-                                        <div className="mb-3">
-                                          <ul className="text-sm text-muted-foreground space-y-1">
-                                            {project.intro
-                                              .slice(0, 2)
-                                              .map((intro, introIndex) => (
-                                                <li
-                                                  key={introIndex}
-                                                  className="flex items-start gap-2"
-                                                >
-                                                  <span className="text-emerald-500 mt-1 text-xs">
-                                                    •
-                                                  </span>
-                                                  <span className="line-clamp-1 text-xs">
-                                                    {intro}
-                                                  </span>
-                                                </li>
-                                              ))}
-                                            {project.intro.length > 2 && (
-                                              <li className="text-xs text-muted-foreground/60">
-                                                ...외 {project.intro.length - 2}
-                                                개 항목
-                                              </li>
-                                            )}
-                                          </ul>
-                                        </div>
-                                      )}
-
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      className="w-full"
-                                    >
-                                      <Eye size={14} className="mr-2" />
-                                      상세보기
-                                    </Button>
-                                  </div>
-                                }
-                              />
-                            ))}
-                          </div>
-                        </div>
+                        <ProjectsCollapsible
+                          projects={company.projects}
+                          side={index % 2 === 0 ? 'right' : 'left'}
+                        />
                       )}
                     </CardContent>
                   </Card>

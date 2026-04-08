@@ -31,13 +31,20 @@ interface CareerProjectProps {
   intro: Array<string>;
   result?: Array<string>;
   images?: Array<string>;
+  featured?: boolean;
 }
+interface WorkItemProps {
+  title: string;
+  details?: Array<string>;
+}
+
 interface CompanyProps {
   key: string;
   name: string;
   term: string;
   position: string;
-  works: Array<string>;
+  description?: string;
+  works: Array<WorkItemProps>;
   projects: Array<CareerProjectProps>;
 }
 

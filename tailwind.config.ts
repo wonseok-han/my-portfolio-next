@@ -1,6 +1,8 @@
 import type { Config } from 'tailwindcss';
+import tailwindcssAnimate from 'tailwindcss-animate';
 
 export default {
+  plugins: [tailwindcssAnimate],
   darkMode: ['class'],
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -79,11 +81,51 @@ export default {
           '0%': { transform: 'translateX(-100%)' },
           '100%': { transform: 'translateX(100%)' },
         },
+        'collapsible-down': {
+          from: { height: '0' },
+          to: { height: 'var(--radix-collapsible-content-height)' },
+        },
+        'collapsible-up': {
+          from: { height: 'var(--radix-collapsible-content-height)' },
+          to: { height: '0' },
+        },
+        'dialog-zoom-in': {
+          from: {
+            opacity: '0',
+            transform:
+              'translate(var(--dialog-origin-x, 0px), var(--dialog-origin-y, 0px)) scale(0)',
+          },
+          to: { opacity: '1', transform: 'translate(0, 0) scale(1)' },
+        },
+        'dialog-zoom-out': {
+          from: { opacity: '1', transform: 'translate(0, 0) scale(1)' },
+          to: {
+            opacity: '0',
+            transform:
+              'translate(var(--dialog-origin-x, 0px), var(--dialog-origin-y, 0px)) scale(0)',
+          },
+        },
+        'overlay-in': {
+          from: { opacity: '0' },
+          to: { opacity: '1' },
+        },
+        'overlay-out': {
+          from: { opacity: '1' },
+          to: { opacity: '0' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         shimmer: 'shimmer 2s infinite',
+        'collapsible-down': 'collapsible-down 0.5s cubic-bezier(0.33, 1, 0.68, 1)',
+        'collapsible-up': 'collapsible-up 0.5s cubic-bezier(0.33, 1, 0.68, 1)',
+        'dialog-zoom-in':
+          'dialog-zoom-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        'dialog-zoom-out':
+          'dialog-zoom-out 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        'overlay-in': 'overlay-in 0.3s ease-out forwards',
+        'overlay-out': 'overlay-out 0.2s ease-out forwards',
       },
     },
   },
