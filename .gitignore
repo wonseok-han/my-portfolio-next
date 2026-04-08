@@ -35,6 +35,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# stored (S3 sync)
+/public/stored
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
