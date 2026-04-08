@@ -354,8 +354,9 @@ const ProjectsCollapsible = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
-  const featuredProjects = projects.filter((p) => p.featured);
-  const otherProjects = projects.filter((p) => !p.featured);
+  const visibleProjects = projects.filter((p) => p.visible !== false);
+  const featuredProjects = visibleProjects.filter((p) => p.featured);
+  const otherProjects = visibleProjects.filter((p) => !p.featured);
   const hasOthers = otherProjects.length > 0;
   // 기본 0.3s + 프로젝트당 0.15s, 최대 1.5s
   const duration = Math.min(0.3 + otherProjects.length * 0.15, 1.5);

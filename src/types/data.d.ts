@@ -32,6 +32,7 @@ interface CareerProjectProps {
   result?: Array<string>;
   images?: Array<string>;
   featured?: boolean;
+  visible?: boolean;
 }
 interface WorkItemProps {
   title: string;
