@@ -25,25 +25,6 @@ const Playgrounds = ({ projects }: PlaygroundsProps) => {
     setVisibleCount((prev) => prev + PAGE_SIZE);
   }, []);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-      },
-    },
-  };
-
-  const cardVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6 },
-    },
-  };
-
   if (!projects || projects.length === 0) {
     return null;
   }
