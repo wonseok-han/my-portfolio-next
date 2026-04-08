@@ -4,8 +4,9 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink, Github } from 'lucide-react';
+import { ExternalLink, Github, ChevronDown } from 'lucide-react';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
+import { useState, useCallback } from 'react';
 
 interface PlaygroundsProps {
   projects?: SideProjectProps[];
@@ -15,7 +16,15 @@ interface PlaygroundsProps {
  * Playgrounds 섹션 컴포넌트
  * 사이드 프로젝트를 표시합니다
  */
+const PAGE_SIZE = 6;
+
 const Playgrounds = ({ projects }: PlaygroundsProps) => {
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+
+  const handleLoadMore = useCallback(() => {
+    setVisibleCount((prev) => prev + PAGE_SIZE);
+  }, []);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -56,16 +65,16 @@ const Playgrounds = ({ projects }: PlaygroundsProps) => {
         </motion.div>
 
         {/* Projects Grid */}
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          {projects.map((project) => (
-            <motion.div key={project.key} variants={cardVariants}>
-              <Card className="group hover:shadow-lg transition-all duration-300 h-full bg-card/30 backdrop-blur-sm">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {projects.slice(0, visibleCount).map((project, index) => (
+            <motion.div
+              key={project.key}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: (index % PAGE_SIZE) * 0.1 }}
+              viewport={{ once: true }}
+            >
+              <Card className="group hover:border-emerald-500/25 hover:shadow-[0_0_12px_rgba(16,185,129,0.08)] hover:scale-[1.005] transition-all duration-300 h-full bg-card/30 backdrop-blur-sm">
                 {project.image && (
                   <div className="relative overflow-hidden">
                     <ImageWithFallback
@@ -139,7 +148,28 @@ const Playgrounds = ({ projects }: PlaygroundsProps) => {
               </Card>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
+
+        {visibleCount < projects.length && (
+          <div className="flex flex-col items-center mt-8 gap-1">
+            <div className="h-10 w-px bg-gradient-to-b from-transparent via-emerald-500/50 to-emerald-500/80" />
+            <button
+              onClick={handleLoadMore}
+              className="group flex flex-col items-center gap-1.5 py-2 px-4"
+            >
+              <span className="text-xs font-bold bg-gradient-to-r from-emerald-500 to-cyan-500 bg-clip-text text-transparent animate-bounce">
+                더 있어요!
+              </span>
+              <ChevronDown
+                size={18}
+                className="text-emerald-500/60 group-hover:text-emerald-500 transition-colors"
+              />
+            </button>
+            <span className="text-[11px] text-muted-foreground/50">
+              {visibleCount} / {projects.length}
+            </span>
+          </div>
+        )}
       </div>
     </section>
   );

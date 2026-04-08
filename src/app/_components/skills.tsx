@@ -115,7 +115,7 @@ const Skills = ({ skills }: SkillsSectionProps) => {
         >
           {skillCategories.map((category, categoryIndex) => (
             <motion.div key={category.title} variants={cardVariants}>
-              <Card className="p-6 h-full bg-card/50 backdrop-blur-sm">
+              <Card className="p-6 h-full bg-card/50 backdrop-blur-sm hover:border-emerald-500/25 hover:shadow-[0_0_12px_rgba(16,185,129,0.08)] hover:scale-[1.005] transition-all duration-300">
                 <h3 className="text-xl font-semibold mb-6 text-center bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
                   {category.title}
                 </h3>
