@@ -1,18 +1,43 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 /**
  * 헤더 컴포넌트
  * 네비게이션 메뉴와 스크롤 효과를 제공합니다
  */
+const NAV_ITEMS = [
+  { name: 'About', id: 'about' },
+  { name: 'Skills', id: 'skills' },
+  { name: 'Career', id: 'career' },
+  { name: 'Playgrounds', id: 'playgrounds' },
+  { name: 'Contact', id: 'contact' },
+];
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [activeSection, setActiveSection] = useState('');
+
+  // 현재 보이는 섹션 감지
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.find((e) => e.isIntersecting);
+        if (visible) setActiveSection(visible.target.id);
+      },
+      { rootMargin: '-30% 0px -60% 0px' }
+    );
+    NAV_ITEMS.forEach(({ id }) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     let rafId: number;
@@ -40,14 +65,6 @@ const Header = () => {
       cancelAnimationFrame(rafId);
     };
   }, [lastScrollY]);
-
-  const navItems = [
-    { name: 'About', id: 'about' },
-    { name: 'Skills', id: 'skills' },
-    { name: 'Career', id: 'career' },
-    { name: 'Playgrounds', id: 'playgrounds' },
-    { name: 'Contact', id: 'contact' },
-  ];
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -84,11 +101,15 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
+            {NAV_ITEMS.map((item) => (
               <button
                 key={item.id}
                 onClick={() => scrollToSection(item.id)}
-                className="text-muted-foreground hover:text-foreground hover:font-semibold transition-all duration-200"
+                className={`transition-all duration-200 ${
+                  activeSection === item.id
+                    ? 'text-foreground font-semibold'
+                    : 'text-muted-foreground hover:text-foreground hover:font-semibold'
+                }`}
               >
                 {item.name}
               </button>
@@ -97,10 +118,24 @@ const Header = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden"
+            className="md:hidden relative w-6 h-6"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            <motion.span
+              animate={isMenuOpen ? { rotate: 45, y: 0 } : { rotate: 0, y: -6 }}
+              className="absolute left-0 top-1/2 w-6 h-0.5 bg-foreground rounded-full"
+              transition={{ duration: 0.3 }}
+            />
+            <motion.span
+              animate={isMenuOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }}
+              className="absolute left-0 top-1/2 w-6 h-0.5 bg-foreground rounded-full"
+              transition={{ duration: 0.2 }}
+            />
+            <motion.span
+              animate={isMenuOpen ? { rotate: -45, y: 0 } : { rotate: 0, y: 6 }}
+              className="absolute left-0 top-1/2 w-6 h-0.5 bg-foreground rounded-full"
+              transition={{ duration: 0.3 }}
+            />
           </button>
         </nav>
 
@@ -114,16 +149,23 @@ const Header = () => {
               transition={{ duration: 0.3, ease: 'easeInOut' }}
               className="md:hidden overflow-hidden"
             >
-              <div className="mt-4 pb-4 border-t border-border">
-                <div className="flex flex-col space-y-4 pt-4">
-                  {navItems.map((item) => (
-                    <button
+              <div className="mt-4 pb-3 border-t border-border">
+                <div className="flex flex-wrap gap-2 pt-3">
+                  {NAV_ITEMS.map((item, index) => (
+                    <motion.button
                       key={item.id}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.25, delay: index * 0.05 }}
                       onClick={() => scrollToSection(item.id)}
-                      className="text-left text-muted-foreground hover:text-foreground hover:font-semibold transition-all duration-200"
+                      className={`px-4 py-2 rounded-full border text-sm transition-all duration-150 active:scale-95 ${
+                        activeSection === item.id
+                          ? 'border-emerald-500/40 bg-emerald-500/10 text-foreground font-medium'
+                          : 'border-border bg-muted/40 text-muted-foreground'
+                      }`}
                     >
                       {item.name}
-                    </button>
+                    </motion.button>
                   ))}
                 </div>
               </div>
