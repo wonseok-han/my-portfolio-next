@@ -517,7 +517,7 @@ const Career = ({ careers }: CareerProps) => {
                 }`}
               >
                 {/* Timeline dot */}
-                <div className="absolute left-0 md:left-1/2 md:-translate-x-1/2 top-0 md:bottom-0 z-10 flex justify-center">
+                <div className="absolute left-4 -translate-x-1/2 md:left-1/2 md:-translate-x-1/2 top-0 md:bottom-0 z-10 flex justify-center">
                   <div className="md:sticky md:top-1/2 md:-translate-y-1/2 flex items-center gap-3 h-fit">
                     {/* 도트 */}
                     <div className="relative flex items-center justify-center">
@@ -544,7 +544,7 @@ const Career = ({ careers }: CareerProps) => {
 
                 {/* Content */}
                 <div
-                  className={`w-full md:w-1/2 ml-8 md:ml-0 ${
+                  className={`w-[calc(100%-2.5rem)] md:w-1/2 ml-10 md:ml-0 ${
                     index % 2 !== 0 ? 'md:pr-8' : 'md:pl-8'
                   }`}
                 >
