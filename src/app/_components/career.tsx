@@ -286,7 +286,7 @@ const ProjectCard = ({
   project: CareerProjectProps;
   side?: 'left' | 'right';
 }) => (
-  <div className="group relative rounded-xl border border-border bg-card/50 backdrop-blur-sm p-5 transition-all duration-300 hover:border-emerald-500/30 hover:shadow-md hover:shadow-emerald-500/5">
+  <div className="group relative rounded-xl border border-border bg-card/50 md:backdrop-blur-sm p-5 transition-all duration-300 hover:border-emerald-500/30 hover:shadow-md hover:shadow-emerald-500/5">
     {/* 그라데이션 바 - 타임라인 방향을 향함 */}
     <div
       className={`absolute top-4 bottom-4 w-0.5 rounded-full bg-gradient-to-b from-emerald-500 to-cyan-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100 ${
@@ -419,35 +419,57 @@ const ProjectsCollapsible = ({
   );
 };
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.2 },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, x: -50 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.6 },
+  },
+};
+
 /**
  * Career 섹션 컴포넌트
  * 경력 사항을 타임라인 형태로 표시합니다
  */
 const Career = ({ careers }: CareerProps) => {
   const timelineRef = useRef<HTMLDivElement>(null);
-  const [progress, setProgress] = useState(0);
+  const progressRef = useRef<HTMLDivElement>(null);
   const [activeCompany, setActiveCompany] = useState<CompanyProps | null>(null);
   const cardRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
   useEffect(() => {
+    let rafId: number;
     const handleScroll = () => {
-      if (!timelineRef.current) return;
-      const rect = timelineRef.current.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-      const totalHeight = rect.height;
+      rafId = requestAnimationFrame(() => {
+        if (!timelineRef.current || !progressRef.current) return;
+        const rect = timelineRef.current.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+        const totalHeight = rect.height;
 
-      // 타임라인 영역이 뷰포트에 들어온 정도를 계산
-      const entered = windowHeight - rect.top;
-      const ratio = Math.max(
-        0,
-        Math.min(1, entered / (totalHeight + windowHeight * 0.5))
-      );
-      setProgress(ratio);
+        const entered = windowHeight - rect.top;
+        const ratio = Math.max(
+          0,
+          Math.min(1, entered / (totalHeight + windowHeight * 0.5))
+        );
+        progressRef.current.style.transform = `scaleY(${ratio})`;
+      });
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      cancelAnimationFrame(rafId);
+    };
   }, []);
 
   // 모바일: 현재 보이는 회사 감지
@@ -466,25 +488,6 @@ const Career = ({ careers }: CareerProps) => {
     cardRefs.current.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, [careers]);
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
-  const cardVariants = {
-    hidden: { opacity: 0, x: -50 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: { duration: 0.6 },
-    },
-  };
 
   if (!careers || careers.length === 0) {
     return null;
@@ -522,8 +525,9 @@ const Career = ({ careers }: CareerProps) => {
           <div className="absolute left-4 md:left-1/2 md:-translate-x-px top-0 bottom-0 w-0.5 bg-border/40" />
           {/* Timeline line - 스크롤 진행선 */}
           <div
+            ref={progressRef}
             className="absolute left-4 md:left-1/2 md:-translate-x-px top-0 w-0.5 bg-emerald-500 will-change-transform origin-top"
-            style={{ height: '100%', transform: `scaleY(${progress})` }}
+            style={{ height: '100%', transform: 'scaleY(0)' }}
           />
 
           {/* 모바일: sticky 회사 indicator */}
@@ -543,28 +547,25 @@ const Career = ({ careers }: CareerProps) => {
 
           <div className="space-y-16">
             {careers.map((company, index) => (
-              <motion.div
+              <div
                 key={company.key}
                 ref={(el) => {
                   if (el) cardRefs.current.set(company.key, el);
                 }}
                 data-company={company.key}
-                variants={cardVariants}
                 className={`relative flex flex-col md:flex-row items-start ${
                   index % 2 === 0 ? 'md:flex-row-reverse' : ''
                 }`}
               >
-                {/* Timeline dot */}
+                {/* Timeline dot - 애니메이션 없이 고정 */}
                 <div className="absolute left-4 -translate-x-1/2 md:left-1/2 md:-translate-x-1/2 top-0 bottom-0 z-10 hidden md:flex justify-center">
                   <div className="sticky top-1/2 -translate-y-1/2 flex items-center gap-3 h-fit">
-                    {/* 도트 */}
                     <div className="relative flex items-center justify-center">
                       <div className="absolute w-8 h-8 rounded-full bg-emerald-500/20 animate-timeline-ping" />
                       <div className="w-7 h-7 rounded-full border-2 border-emerald-500/40 bg-background flex items-center justify-center">
                         <div className="w-3 h-3 rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500" />
                       </div>
                     </div>
-                    {/* 데스크탑: 회사명 + 기간 라벨 */}
                     <div
                       className={`hidden md:flex flex-col absolute top-1/2 -translate-y-1/2 ${
                         index % 2 === 0 ? 'right-full mr-3' : 'left-full ml-3'
@@ -580,13 +581,14 @@ const Career = ({ careers }: CareerProps) => {
                   </div>
                 </div>
 
-                {/* Content */}
-                <div
+                {/* Content - 슬라이드 애니메이션 */}
+                <motion.div
+                  variants={cardVariants}
                   className={`w-[calc(100%-2.5rem)] md:w-1/2 ml-10 md:ml-0 ${
                     index % 2 !== 0 ? 'md:pr-8' : 'md:pl-8'
                   }`}
                 >
-                  <Card className="bg-card/50 backdrop-blur-sm hover:border-emerald-500/25 hover:shadow-[0_0_12px_rgba(16,185,129,0.08)] hover:scale-[1.005] transition-all duration-300">
+                  <Card className="bg-card/50 md:backdrop-blur-sm hover:border-emerald-500/25 hover:shadow-[0_0_12px_rgba(16,185,129,0.08)] hover:scale-[1.005] transition-all duration-300">
                     <CardHeader className="p-6 pb-0">
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                         <div>
@@ -629,8 +631,8 @@ const Career = ({ careers }: CareerProps) => {
                       )}
                     </CardContent>
                   </Card>
-                </div>
-              </motion.div>
+                </motion.div>
+              </div>
             ))}
           </div>
         </motion.div>

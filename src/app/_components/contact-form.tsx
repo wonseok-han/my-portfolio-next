@@ -45,7 +45,7 @@ export function ContactForm() {
   };
 
   return (
-    <Card className="bg-card/50 backdrop-blur-sm">
+    <Card className="bg-card/50 md:backdrop-blur-sm">
       <CardHeader>
         <CardTitle>메시지 보내기</CardTitle>
       </CardHeader>

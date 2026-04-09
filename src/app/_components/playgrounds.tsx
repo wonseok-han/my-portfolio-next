@@ -55,7 +55,7 @@ const Playgrounds = ({ projects }: PlaygroundsProps) => {
               transition={{ duration: 0.6, delay: (index % PAGE_SIZE) * 0.1 }}
               viewport={{ once: true }}
             >
-              <Card className="group hover:border-emerald-500/25 hover:shadow-[0_0_12px_rgba(16,185,129,0.08)] hover:scale-[1.005] transition-all duration-300 h-full bg-card/30 backdrop-blur-sm">
+              <Card className="group hover:border-emerald-500/25 hover:shadow-[0_0_12px_rgba(16,185,129,0.08)] hover:scale-[1.005] transition-all duration-300 h-full bg-card/30 md:backdrop-blur-sm">
                 {project.image && (
                   <div className="relative overflow-hidden">
                     <ImageWithFallback

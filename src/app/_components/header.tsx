@@ -15,27 +15,30 @@ const Header = () => {
   const [lastScrollY, setLastScrollY] = useState(0);
 
   useEffect(() => {
+    let rafId: number;
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const currentScrollY = window.scrollY;
 
-      // 스크롤 위치에 따른 배경 효과
-      setIsScrolled(currentScrollY > 20);
+        setIsScrolled(currentScrollY > 20);
 
-      // 스크롤 방향에 따른 헤더 표시/숨김
-      if (currentScrollY < lastScrollY || currentScrollY < 100) {
-        // 스크롤 올릴 때 또는 최상단 근처일 때 표시
-        setIsVisible(true);
-      } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        // 스크롤 내릴 때 숨김
-        setIsVisible(false);
-        setIsMenuOpen(false); // 모바일 메뉴도 닫기
-      }
+        if (currentScrollY < lastScrollY || currentScrollY < 100) {
+          setIsVisible(true);
+        } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+          setIsVisible(false);
+          setIsMenuOpen(false);
+        }
 
-      setLastScrollY(currentScrollY);
+        setLastScrollY(currentScrollY);
+      });
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      cancelAnimationFrame(rafId);
+    };
   }, [lastScrollY]);
 
   const navItems = [
