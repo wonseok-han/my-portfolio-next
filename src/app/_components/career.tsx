@@ -426,6 +426,8 @@ const ProjectsCollapsible = ({
 const Career = ({ careers }: CareerProps) => {
   const timelineRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
+  const [activeCompany, setActiveCompany] = useState<CompanyProps | null>(null);
+  const cardRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
   useEffect(() => {
     const handleScroll = () => {
@@ -447,6 +449,23 @@ const Career = ({ careers }: CareerProps) => {
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // 모바일: 현재 보이는 회사 감지
+  useEffect(() => {
+    if (!careers) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.find((e) => e.isIntersecting);
+        if (visible) {
+          const company = careers.find((c) => c.key === visible.target.getAttribute('data-company'));
+          if (company) setActiveCompany(company);
+        }
+      },
+      { rootMargin: '-40% 0px -55% 0px' }
+    );
+    cardRefs.current.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [careers]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -507,18 +526,37 @@ const Career = ({ careers }: CareerProps) => {
             style={{ height: '100%', transform: `scaleY(${progress})` }}
           />
 
+          {/* 모바일: sticky 회사 indicator */}
+          {activeCompany && (
+            <div className="md:hidden sticky top-16 z-40 pb-4">
+              <div className="inline-flex items-center gap-2 bg-background/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-emerald-500/25 shadow-md ml-10">
+                <div className="w-2 h-2 rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500 flex-shrink-0" />
+                <span className="text-[11px] font-semibold text-foreground/80">
+                  {activeCompany.name}
+                </span>
+                <span className="text-[10px] text-muted-foreground">
+                  {activeCompany.term}
+                </span>
+              </div>
+            </div>
+          )}
+
           <div className="space-y-16">
             {careers.map((company, index) => (
               <motion.div
                 key={company.key}
+                ref={(el) => {
+                  if (el) cardRefs.current.set(company.key, el);
+                }}
+                data-company={company.key}
                 variants={cardVariants}
                 className={`relative flex flex-col md:flex-row items-start ${
                   index % 2 === 0 ? 'md:flex-row-reverse' : ''
                 }`}
               >
                 {/* Timeline dot */}
-                <div className="absolute left-4 -translate-x-1/2 md:left-1/2 md:-translate-x-1/2 top-0 md:bottom-0 z-10 flex justify-center">
-                  <div className="md:sticky md:top-1/2 md:-translate-y-1/2 flex items-center gap-3 h-fit">
+                <div className="absolute left-4 -translate-x-1/2 md:left-1/2 md:-translate-x-1/2 top-0 bottom-0 z-10 hidden md:flex justify-center">
+                  <div className="sticky top-1/2 -translate-y-1/2 flex items-center gap-3 h-fit">
                     {/* 도트 */}
                     <div className="relative flex items-center justify-center">
                       <div className="absolute w-8 h-8 rounded-full bg-emerald-500/20 animate-timeline-ping" />
@@ -526,7 +564,7 @@ const Career = ({ careers }: CareerProps) => {
                         <div className="w-3 h-3 rounded-full bg-gradient-to-r from-emerald-500 to-cyan-500" />
                       </div>
                     </div>
-                    {/* 회사명 + 기간 라벨 */}
+                    {/* 데스크탑: 회사명 + 기간 라벨 */}
                     <div
                       className={`hidden md:flex flex-col absolute top-1/2 -translate-y-1/2 ${
                         index % 2 === 0 ? 'right-full mr-3' : 'left-full ml-3'
