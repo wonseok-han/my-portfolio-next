@@ -66,7 +66,9 @@ const Playgrounds = ({ projects }: PlaygroundsProps) => {
                   </div>
                 )}
                 <CardHeader className="px-3">
-                  <CardTitle className="text-lg">{project.name}</CardTitle>
+                  <CardTitle className="text-lg font-bold">
+                    {project.name}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="pt-0">
                   {project.intro && project.intro.length > 0 && (
