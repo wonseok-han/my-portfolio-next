@@ -6,16 +6,21 @@ import Playgrounds from '@components/playgrounds';
 import Contact from '@components/contact';
 import Footer from '@components/footer';
 import { Toaster } from '@/components/ui/sonner';
+import { headers } from 'next/headers';
 
 // 동적 렌더링 설정
 export const dynamic = 'force-dynamic';
 
-/**
- * 서버 컴포넌트에서 데이터를 fetch
- */
 async function fetchPortfolioData() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    let baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
+    if (!baseUrl) {
+      const headersList = await headers();
+      const proto = headersList.get('x-forwarded-proto') || 'http';
+      const host = headersList.get('host') || 'localhost:3000';
+      baseUrl = `${proto}://${host}`;
+    }
 
     const [userRes, skillsRes, careersRes, projectsRes] = await Promise.all([
       fetch(`${baseUrl}/api/user`, { next: { revalidate: 0 } }),
