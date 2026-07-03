@@ -65,7 +65,7 @@ const Hero = ({ user }: HeroProps) => {
             </motion.div>
 
             <motion.p
-              className="text-xl text-muted-foreground max-w-2xl"
+              className="text-xl text-muted-foreground max-w-2xl whitespace-pre-wrap"
               variants={itemVariants}
             >
               {user?.intro}
