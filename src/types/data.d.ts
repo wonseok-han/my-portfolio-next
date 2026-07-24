@@ -55,6 +55,8 @@ interface SideProjectProps {
   skills: string;
   url: string;
   image?: string;
+  /** 캡처가 여러 장인 경우 사용. 지정하면 image 대신 이 목록을 스와이프로 보여줍니다 */
+  images?: Array<string>;
   github?: string;
   intro?: Array<string>;
 }
