@@ -52,6 +52,7 @@ interface CompanyProps {
 interface SideProjectProps {
   key: string;
   name: string;
+  visible?: boolean;
   skills: string;
   url: string;
   image?: string;

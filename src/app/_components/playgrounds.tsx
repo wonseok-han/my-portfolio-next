@@ -135,6 +135,8 @@ const PAGE_SIZE = 6;
 
 const Playgrounds = ({ projects }: PlaygroundsProps) => {
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const visibleProjects =
+    projects?.filter((project) => project.visible !== false) ?? [];
 
   // images가 있으면 우선 사용하고, 없으면 기존 단일 image로 폴백
   const resolveImages = useCallback(
@@ -151,7 +153,7 @@ const Playgrounds = ({ projects }: PlaygroundsProps) => {
     setVisibleCount((prev) => prev + PAGE_SIZE);
   }, []);
 
-  if (!projects || projects.length === 0) {
+  if (visibleProjects.length === 0) {
     return null;
   }
 
@@ -173,7 +175,7 @@ const Playgrounds = ({ projects }: PlaygroundsProps) => {
 
         {/* Projects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.slice(0, visibleCount).map((project, index) => {
+          {visibleProjects.slice(0, visibleCount).map((project, index) => {
             const images = resolveImages(project);
 
             return (
@@ -257,7 +259,7 @@ const Playgrounds = ({ projects }: PlaygroundsProps) => {
           })}
         </div>
 
-        {visibleCount < projects.length && (
+        {visibleCount < visibleProjects.length && (
           <div className="flex flex-col items-center mt-8 gap-1">
             <div className="h-10 w-px bg-gradient-to-b from-transparent via-emerald-500/50 to-emerald-500/80" />
             <button
@@ -273,7 +275,7 @@ const Playgrounds = ({ projects }: PlaygroundsProps) => {
               />
             </button>
             <span className="text-[11px] text-muted-foreground/50">
-              {visibleCount} / {projects.length}
+              {visibleCount} / {visibleProjects.length}
             </span>
           </div>
         )}
